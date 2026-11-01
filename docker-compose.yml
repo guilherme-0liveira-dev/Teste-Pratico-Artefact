@@ -10,7 +10,7 @@ services:
     container_name: emporio-ai
     restart: unless-stopped
     ports:
-      - "8501:8501"
+      - "${PORT:-8501}:8501"
     environment:
       - LLM_PROVIDER=${LLM_PROVIDER:-nvidia}
       - LLM_API_KEY=${LLM_API_KEY:-}
