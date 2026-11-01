@@ -7,7 +7,7 @@ from app.agent.prompts import SYSTEM_PROMPT
 from app.agent.tools import TOOL_REGISTRY, TOOL_SCHEMAS
 from app.core.config import settings
 from app.core.logging import logger
-from app.llm.provider import BaseLLMProvider, OpenAICompatibleProvider
+from app.llm.provider import BaseLLMProvider, MockLLMProvider, OpenAICompatibleProvider
 
 
 @dataclass
@@ -60,7 +60,23 @@ class AgentOrchestrator:
                     tools=TOOL_SCHEMAS,
                 )
             except Exception as e:
-                logger.error(f"LLM generation failed: {e}")
+                logger.error(f"LLM generation failed after retries: {e}")
+                # Seamless fallback: if primary provider is OpenAICompatibleProvider (cloud),
+                # use deterministic local synthesis so the customer NEVER leaves without an answer!
+                if isinstance(self.provider, OpenAICompatibleProvider):
+                    try:
+                        logger.info(
+                            "Engaging seamless local fallback synthesizer to fulfill customer turn..."
+                        )
+                        fallback_provider = MockLLMProvider()
+                        fallback_resp = fallback_provider.chat_completion(self.messages)
+                        if fallback_resp.content:
+                            final_answer = sanitize_response_text(fallback_resp.content)
+                            self.messages.append({"role": "assistant", "content": final_answer})
+                            break
+                    except Exception as fallback_err:
+                        logger.error(f"Fallback synthesis error: {fallback_err}")
+
                 final_answer = (
                     "Desculpe, tive uma instabilidade temporária ao consultar meu sistema. "
                     "Por favor, tente novamente ou entre em contato com nossa equipe no WhatsApp (67) 3341-4444."

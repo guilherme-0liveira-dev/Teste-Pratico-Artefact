@@ -1,6 +1,6 @@
-"""LLM Provider abstraction supporting NVIDIA NIM, OpenAI, and Mock providers."""
-
 import json
+import random
+import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any
@@ -109,8 +109,9 @@ class OpenAICompatibleProvider(BaseLLMProvider):
         messages: list[dict[str, Any]],
         tools: list[dict[str, Any]] | None = None,
     ) -> LLMResponse:
+        current_model = self.model
         kwargs: dict[str, Any] = {
-            "model": self.model,
+            "model": current_model,
             "messages": messages,
             "temperature": self.temperature,
             "max_tokens": settings.LLM_MAX_TOKENS,
@@ -119,35 +120,76 @@ class OpenAICompatibleProvider(BaseLLMProvider):
             kwargs["tools"] = tools
             kwargs["tool_choice"] = "auto"
 
-        try:
-            response = self.client.chat.completions.create(**kwargs)
-            choice = response.choices[0]
-            message = choice.message
+        max_retries = 3
+        last_exception = None
 
-            tool_calls: list[ToolCallRequest] = []
-            if getattr(message, "tool_calls", None):
-                for tc in message.tool_calls:
-                    try:
-                        args = json.loads(tc.function.arguments)
-                    except json.JSONDecodeError:
-                        args = {}
-                    tool_calls.append(
-                        ToolCallRequest(
-                            id=tc.id,
-                            name=tc.function.name,
-                            arguments=args,
+        for attempt in range(1, max_retries + 1):
+            try:
+                response = self.client.chat.completions.create(**kwargs)
+                choice = response.choices[0]
+                message = choice.message
+
+                tool_calls: list[ToolCallRequest] = []
+                if getattr(message, "tool_calls", None):
+                    for tc in message.tool_calls:
+                        try:
+                            args = json.loads(tc.function.arguments)
+                        except json.JSONDecodeError:
+                            args = {}
+                        tool_calls.append(
+                            ToolCallRequest(
+                                id=tc.id,
+                                name=tc.function.name,
+                                arguments=args,
+                            )
                         )
-                    )
 
-            return LLMResponse(
-                content=message.content,
-                tool_calls=tool_calls,
-                raw_message=message,
-                finish_reason=choice.finish_reason or "stop",
-            )
-        except Exception as e:
-            logger.error(f"Error calling LLM provider ({self.base_url}): {e}")
-            raise
+                return LLMResponse(
+                    content=message.content,
+                    tool_calls=tool_calls,
+                    raw_message=message,
+                    finish_reason=choice.finish_reason or "stop",
+                )
+            except Exception as e:
+                last_exception = e
+                err_str = str(e)
+                # Transient error detection (NVIDIA NIM cold start 404, rate limits 429, gateway 502/503/504, connection blips)
+                is_transient = any(
+                    code in err_str
+                    for code in [
+                        "404",
+                        "429",
+                        "500",
+                        "502",
+                        "503",
+                        "504",
+                        "Connection",
+                        "timeout",
+                        "timed out",
+                        "RemoteDisconnected",
+                    ]
+                )
+
+                if attempt < max_retries and is_transient:
+                    # If preview model bolt-e4b returns 404 on attempt 2, switch kwargs["model"] to resilient fallback model
+                    if attempt == 2 and "404" in err_str and "bolt" in kwargs["model"]:
+                        kwargs["model"] = "nvidia/llama-3.1-nemotron-70b-instruct"
+                        logger.warning(
+                            f"Model {current_model} returned 404. Attempting fallback model {kwargs['model']}..."
+                        )
+
+                    backoff = (1.2 * (1.6 ** (attempt - 1))) + random.uniform(0.1, 0.4)
+                    logger.warning(
+                        f"Transient error calling LLM provider ({self.base_url}, model={kwargs['model']}): {e}. "
+                        f"Aguardando reconexão ({backoff:.2f}s) - tentativa {attempt}/{max_retries}..."
+                    )
+                    time.sleep(backoff)
+                    continue
+
+                logger.error(
+                    f"Error calling LLM provider ({self.base_url}, attempt {attempt}/{max_retries}): {e}"
+                )
+                raise last_exception
 
 
 class MockLLMProvider(BaseLLMProvider):
