@@ -134,7 +134,7 @@ def execute_search_products(args: dict[str, Any]) -> str:
                 f"Estoque: {p['stock_quantity']} un." if p["is_in_stock"] else "FORA DE ESTOQUE"
             )
             output.append(
-                f"- ID {p['product_id']}: **{p['name']}** ({p['category']})\n"
+                f"- **{p['name']}** ({p['category']})\n"
                 f"  Preço: R$ {p['final_price_brl']:.2f}{promo_info} | À vista no PIX: R$ {p['pix_price_brl']:.2f} (5% off)\n"
                 f"  Parcelamento: {p['max_installments']} | {stock_info}"
             )
@@ -184,9 +184,9 @@ def execute_check_stock(args: dict[str, Any]) -> str:
         if not res["found"]:
             return res["message"]
         if res["is_in_stock"]:
-            return f"O produto **{res['name']}** (ID: {res['product_id']}) está **DISPONÍVEL** com {res['stock_quantity']} unidade(s) em estoque. Preço atual: R$ {res['price_brl']:.2f}."
+            return f"O produto **{res['name']}** está **DISPONÍVEL** com {res['stock_quantity']} unidade(s) em estoque. Preço atual: R$ {res['price_brl']:.2f}."
         else:
-            return f"O produto **{res['name']}** (ID: {res['product_id']}) está **TEMPORARIAMENTE INDISPONÍVEL** (estoque zerado). Recomende ao cliente modelos equivalentes disponíveis."
+            return f"O produto **{res['name']}** está **TEMPORARIAMENTE INDISPONÍVEL** (estoque zerado). Recomende ao cliente modelos equivalentes disponíveis."
     finally:
         db.close()
 

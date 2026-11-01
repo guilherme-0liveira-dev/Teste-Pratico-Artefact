@@ -173,6 +173,96 @@ class MockLLMProvider(BaseLLMProvider):
         if self.responses:
             return self.responses.pop(0)
 
+        # Check if the previous message was a tool result: synthesize answer
+        if messages and messages[-1].get("role") == "tool":
+            last_tool_msg = messages[-1].get("content", "")
+            # Find the tool that was called
+            tool_name = ""
+            for m in reversed(messages[:-1]):
+                if m.get("tool_calls"):
+                    tool_name = m["tool_calls"][0].name
+                    break
+
+            if tool_name == "search_products":
+                return LLMResponse(
+                    content=(
+                        "Consultando nosso catálogo em tempo real, temos excelentes opções de violões disponíveis até R$ 1.000,00:\n\n"
+                        "🟢 **Mais Acessíveis:**\n"
+                        "- 🎸 **Tagima Memphis AC-39 (Nylon)** — R$ 429,90\n"
+                        "  - À vista no PIX (5% off): **R$ 408,40**\n"
+                        "  - Cartão: até **3x de R$ 143,30** sem juros\n\n"
+                        "- 🎸 **Rozini RC-104 (Nylon)** — R$ 459,90\n"
+                        "  - À vista no PIX (5% off): **R$ 436,90**\n"
+                        "  - Cartão: até **3x de R$ 153,30** sem juros\n\n"
+                        "🟡 **Intermediários:**\n"
+                        "- 🎸 **Yamaha C40 (Nylon)** — R$ 599,90\n"
+                        "  - À vista no PIX (5% off): **R$ 569,90**\n"
+                        "  - Cartão: até **6x de R$ 99,98** sem juros (parcela mínima de R$ 80,00)\n\n"
+                        "- 🎸 **Yamaha F310 (Aço)** — R$ 699,90\n"
+                        "  - À vista no PIX (5% off): **R$ 664,90**\n"
+                        "  - Cartão: até **6x de R$ 116,65** sem juros (parcela mínima de R$ 80,00)\n\n"
+                        "🔵 **Mais Robustos (até o limite de R$ 1.000):**\n"
+                        "- 🎸 **Shelby SGD-195E (Elétrico Aço)** — R$ 799,00\n"
+                        "  - À vista no PIX (5% off): **R$ 759,05**\n"
+                        "  - Cartão: até **7x de R$ 114,14** sem juros (parcela mínima de R$ 100,00)\n\n"
+                        "- 🎸 **Yamaha C70 (Nylon)** — R$ 849,00\n"
+                        "  - À vista no PIX (5% off): **R$ 806,55**\n"
+                        "  - Cartão: até **8x de R$ 106,12** sem juros (parcela mínima de R$ 100,00)\n\n"
+                        "🚚 **Frete:** Grátis em Campo Grande para compras a partir de R$ 500,00 (1 a 3 dias úteis). "
+                        "Todos os modelos contam com 90 dias de garantia legal. Gostaria de reservar algum desses modelos?"
+                    ),
+                    tool_calls=[],
+                )
+            elif tool_name == "get_order_status":
+                return LLMResponse(
+                    content=(
+                        "Localizei o seu pedido em nossa base de dados:\n\n"
+                        "📦 **Pedido #8**\n"
+                        "- **Status:** Entregue ao cliente\n"
+                        "- **Data da Entrega:** 18/01/2025\n\n"
+                        "ℹ️ **Prazo de Devolução (CDC):**\n"
+                        "Conforme o Artigo 49 do Código de Defesa do Consumidor, compras realizadas pela internet "
+                        "possuem **7 dias corridos** após o recebimento para devolução por arrependimento com reembolso integral.\n\n"
+                        "Posso ajudar com mais algum detalhe sobre seu pedido?"
+                    ),
+                    tool_calls=[],
+                )
+            elif tool_name == "search_store_policies":
+                return LLMResponse(
+                    content=(
+                        "Aqui estão as diretrizes oficiais da **Empório da Música**:\n\n"
+                        "💳 **Formas de Pagamento e Desconto PIX:**\n"
+                        "- **PIX à vista:** 5% de desconto automático sobre o preço regular (não cumulativo com promoções ativas).\n"
+                        "- **Cartão de Crédito sem juros:**\n"
+                        "  - 1x a 3x: sem valor mínimo por parcela\n"
+                        "  - 4x a 6x: parcela mínima de R$ 80,00\n"
+                        "  - 7x a 12x: parcela mínima de R$ 100,00\n\n"
+                        "🚚 **Entrega em Campo Grande - MS:**\n"
+                        "- Frete Grátis em compras a partir de R$ 500,00 (entrega de 1 a 3 dias úteis via motoboy).\n"
+                        "- Taxa fixa de R$ 35,00 para pedidos abaixo de R$ 500,00.\n\n"
+                        "Deseja calcular as condições para um instrumento específico?"
+                    ),
+                    tool_calls=[],
+                )
+            elif tool_name in ("get_product_details", "check_stock"):
+                return LLMResponse(
+                    content=(
+                        "🎸 **Fender Stratocaster Player Series:**\n\n"
+                        "- **Preço Regular:** R$ 7.490,00\n"
+                        "- **Disponibilidade:** Em estoque na loja de Campo Grande (3 unidades)\n"
+                        "- **Pagamento no PIX (5% off):** **R$ 7.115,50**\n"
+                        "- **Parcelamento sem juros:** até **12x de R$ 624,17** no cartão de crédito\n"
+                        "- **Frete:** Grátis para Campo Grande (compra acima de R$ 500,00)\n\n"
+                        "Deseja que nossa equipe separe este instrumento para você testar em nossa loja?"
+                    ),
+                    tool_calls=[],
+                )
+
+            return LLMResponse(
+                content=f"Consultei os registros da loja:\n\n{last_tool_msg[:300]}\n\nComo posso prosseguir?",
+                tool_calls=[],
+            )
+
         # Smart default heuristic for mock tests
         last_user_msg = ""
         for m in reversed(messages):
@@ -192,7 +282,13 @@ class MockLLMProvider(BaseLLMProvider):
                 ],
             )
         elif (
-            "endereço" in last_user_msg or "horário" in last_user_msg or "horario" in last_user_msg
+            "endereço" in last_user_msg
+            or "horário" in last_user_msg
+            or "horario" in last_user_msg
+            or "pix" in last_user_msg
+            or "parcel" in last_user_msg
+            or "política" in last_user_msg
+            or "politica" in last_user_msg
         ):
             return LLMResponse(
                 content=None,
@@ -200,7 +296,29 @@ class MockLLMProvider(BaseLLMProvider):
                     ToolCallRequest(
                         id="call_mock_2",
                         name="search_store_policies",
-                        arguments={"query": "horário de funcionamento e endereço da loja"},
+                        arguments={"query": "pagamento parcelamento pix políticas da loja"},
+                    )
+                ],
+            )
+        elif "pedido" in last_user_msg or "#8" in last_user_msg:
+            return LLMResponse(
+                content=None,
+                tool_calls=[
+                    ToolCallRequest(
+                        id="call_mock_3",
+                        name="get_order_status",
+                        arguments={"order_id": 8},
+                    )
+                ],
+            )
+        elif "fender" in last_user_msg or "stratocaster" in last_user_msg:
+            return LLMResponse(
+                content=None,
+                tool_calls=[
+                    ToolCallRequest(
+                        id="call_mock_4",
+                        name="get_product_details",
+                        arguments={"product_name": "Fender Player Stratocaster"},
                     )
                 ],
             )

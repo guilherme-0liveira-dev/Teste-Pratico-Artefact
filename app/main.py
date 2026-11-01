@@ -12,9 +12,15 @@ sys.path.insert(0, str(BASE_DIR))
 
 import importlib
 
+import app.agent.orchestrator
+import app.agent.prompts
+import app.agent.tools
 import app.llm.provider
 
 importlib.reload(app.llm.provider)
+importlib.reload(app.agent.prompts)
+importlib.reload(app.agent.tools)
+importlib.reload(app.agent.orchestrator)
 
 from app.agent.orchestrator import AgentOrchestrator, AgentTurnResult  # noqa: E402
 from app.core.config import settings  # noqa: E402
@@ -91,50 +97,160 @@ h1, h2, h3, h4, h5 {
     background-attachment: fixed !important;
 }
 
+/* Hide Streamlit default deploy/menu/footer */
+.stDeployButton, [data-testid="stToolbar"], footer, #MainMenu {
+    display: none !important;
+}
+
+/* Main container layout */
+.block-container {
+    max-width: 1040px !important;
+    padding-top: 1.8rem !important;
+    padding-bottom: 6rem !important;
+}
+
 /* Glassmorphism Containers */
 .glass-header {
     background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(188, 188, 188, 0.18);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(188, 188, 188, 0.16);
     border-radius: 20px;
-    padding: 1.5rem 2rem;
-    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7);
+    padding: 1.25rem 1.8rem;
+    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65);
     margin-bottom: 1.5rem;
 }
 
-/* Sidebar Glass Effect */
+/* Lighter, Premium Frosted Glass Sidebar */
 [data-testid="stSidebar"] {
-    background: rgba(18, 18, 18, 0.88) !important;
-    backdrop-filter: blur(28px);
-    -webkit-backdrop-filter: blur(28px);
-    border-right: 1px solid rgba(188, 188, 188, 0.12);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%),
+                rgba(22, 22, 26, 0.78) !important;
+    backdrop-filter: blur(36px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(36px) saturate(180%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 6px 0 32px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Sidebar Glass Content Cards */
+.glass-sidebar-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 16px;
+    padding: 1.15rem 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+}
+
+.glass-sidebar-card:hover {
+    border-color: rgba(214, 255, 0, 0.35);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35), 0 0 16px rgba(214, 255, 0, 0.08);
+}
+
+.sidebar-brand-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin: 0 0 0.8rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sidebar-item {
+    font-size: 0.86rem;
+    color: #E2E2E6;
+    margin-bottom: 0.55rem;
+    line-height: 1.45;
+}
+
+.sidebar-item strong {
+    color: #FFFFFF;
+}
+
+.sidebar-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Sidebar Metrics & Expanders */
+[data-testid="stSidebar"] [data-testid="stMetric"] {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 12px !important;
+    padding: 0.65rem 0.85rem !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stMetricLabel"] {
+    color: #BCBCBC !important;
+    font-size: 0.78rem !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stMetricValue"] {
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stExpander"] {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+}
+
+[data-testid="stSidebar"] .stButton > button {
+    width: 100% !important;
+    border-radius: 12px !important;
 }
 
 /* Glass Chat Bubbles */
 [data-testid="stChatMessage"] {
-    background: rgba(255, 255, 255, 0.035) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(188, 188, 188, 0.12) !important;
+    background: rgba(255, 255, 255, 0.028) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(188, 188, 188, 0.11) !important;
     border-radius: 16px !important;
     margin-bottom: 1rem !important;
-    padding: 1rem 1.4rem !important;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+    padding: 1.1rem 1.5rem !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35) !important;
+    line-height: 1.6 !important;
 }
 
 /* Custom User Bubble (Neon Lime #D6FF00 Accent Border) */
 [data-testid="stChatMessage"]:nth-child(even) {
-    border-left: 4px solid #D6FF00 !important;
+    border-left: 3px solid #D6FF00 !important;
     background: rgba(214, 255, 0, 0.03) !important;
 }
 
 /* Custom Assistant Bubble (Chrome #BCBCBC Accent Border) */
 [data-testid="stChatMessage"]:nth-child(odd) {
-    border-left: 4px solid #BCBCBC !important;
+    border-left: 3px solid #BCBCBC !important;
 }
 
-/* Buttons with Neon Cyber Lime Glow */
+/* Suggestion Buttons Styling */
+div[data-testid="column"] .stButton > button {
+    width: 100% !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(12px) !important;
+    color: #F1F1F1 !important;
+    border: 1px solid rgba(188, 188, 188, 0.15) !important;
+    border-radius: 12px !important;
+    padding: 0.65rem 0.9rem !important;
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+div[data-testid="column"] .stButton > button:hover {
+    background: rgba(214, 255, 0, 0.08) !important;
+    color: #FFFFFF !important;
+    border-color: rgba(214, 255, 0, 0.45) !important;
+    box-shadow: 0 0 16px rgba(214, 255, 0, 0.2) !important;
+    transform: translateY(-2px);
+}
+
+/* General Buttons with Neon Cyber Lime Glow */
 .stButton > button {
     background: rgba(255, 255, 255, 0.04) !important;
     backdrop-filter: blur(12px) !important;
@@ -152,6 +268,22 @@ h1, h2, h3, h4, h5 {
     border-color: #D6FF00 !important;
     box-shadow: 0 0 20px rgba(214, 255, 0, 0.6) !important;
     transform: translateY(-2px);
+}
+
+/* Chat Input Styling */
+[data-testid="stChatInput"] {
+    background: rgba(18, 18, 18, 0.88) !important;
+    backdrop-filter: blur(28px) !important;
+    -webkit-backdrop-filter: blur(28px) !important;
+    border: 1px solid rgba(188, 188, 188, 0.18) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.8) !important;
+    transition: all 0.25s ease !important;
+}
+
+[data-testid="stChatInput"]:focus-within {
+    border-color: #D6FF00 !important;
+    box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.9), 0 0 20px rgba(214, 255, 0, 0.25) !important;
 }
 
 /* Inputs styling */
@@ -193,6 +325,19 @@ h1, h2, h3, h4, h5 {
     background: rgba(188, 188, 188, 0.1);
     border: 1px solid rgba(188, 188, 188, 0.4);
     color: #BCBCBC;
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(188, 188, 188, 0.25);
+    border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(214, 255, 0, 0.5);
 }
 </style>
 """
@@ -273,23 +418,21 @@ else:
     badge_html = '<span class="badge-silver">⚡ MODO DEMONSTRAÇÃO (OFFLINE)</span>'
 
 st.markdown(
-    f"""
-    <div class="glass-header">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-            <div>
-                <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; color: #FFFFFF;">
-                    🎸 Empório AI
-                </h1>
-                <p style="margin: 0.35rem 0 0 0; color: #BCBCBC; font-size: 1.05rem;">
-                    Atendimento Inteligente — <strong style="color: #D6FF00;">Empório da Música</strong> | Campo Grande - MS
-                </p>
-            </div>
-            <div>
-                {badge_html}
-            </div>
-        </div>
-    </div>
-    """,
+    f"""<div class="glass-header">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+<div>
+<h1 style="margin: 0; font-size: 2rem; font-weight: 800; color: #FFFFFF; letter-spacing: -0.02em;">
+🎸 Empório AI
+</h1>
+<p style="margin: 0.35rem 0 0 0; color: #BCBCBC; font-size: 0.95rem;">
+Atendimento Inteligente — <strong style="color: #D6FF00;">Empório da Música</strong> | Campo Grande - MS
+</p>
+</div>
+<div>
+{badge_html}
+</div>
+</div>
+</div>""",
     unsafe_allow_html=True,
 )
 
@@ -424,30 +567,32 @@ with st.expander(
 
 with st.sidebar:
     st.markdown(
-        """
-        <div style="text-align: center; margin-bottom: 1rem;">
-            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&auto=format&fit=crop&q=80"
-                 style="width: 100%; border-radius: 12px; border: 1px solid rgba(188,188,188,0.2); box-shadow: 0 4px 16px rgba(0,0,0,0.6);" />
-        </div>
-        """,
+        """<div class="glass-sidebar-card" style="text-align: center; padding: 0.5rem; margin-bottom: 0.85rem;">
+<img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&auto=format&fit=crop&q=80"
+style="width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); display: block;" />
+</div>""",
         unsafe_allow_html=True,
     )
-    st.subheader("ℹ️ Dados da Loja")
-    st.markdown(
-        """
-        - 📍 **Endereço:** Rua 14 de Maio, 3200 — Centro, Campo Grande - MS
-        - ⏰ **Horário:** Seg a Sex (09h às 18h) | Sáb (09h às 13h)
-        - 📱 **WhatsApp:** (67) 3341-4444
-        - ✉️ **E-mail:** contato@emporiodamusica.com.br
-        """
-    )
-    st.markdown("---")
 
-    st.subheader("🔍 Diagnóstico Técnico")
+    st.markdown(
+        """<div class="glass-sidebar-card">
+<div class="sidebar-brand-title">🏛️ Empório da Música</div>
+<div class="sidebar-item">📍 <strong>Endereço:</strong><br/>Rua 14 de Maio, 3200 — Centro, Campo Grande - MS</div>
+<div class="sidebar-item">⏰ <strong>Horário:</strong><br/>Seg a Sex: 09h às 18h | Sáb: 09h às 13h</div>
+<div class="sidebar-item">📱 <strong>WhatsApp:</strong> (67) 3341-4444</div>
+<div class="sidebar-item">✉️ <strong>E-mail:</strong> contato@emporiodamusica.com.br</div>
+</div>""",
+        unsafe_allow_html=True,
+    )
+
+    st.markdown('<div class="sidebar-brand-title" style="margin-top: 1rem;">🔍 Diagnóstico Técnico</div>', unsafe_allow_html=True)
     diag: AgentTurnResult | None = st.session_state.last_diagnostics
     if diag:
-        st.metric("Latência do Turno", f"{diag.turn_latency_s:.2f}s")
-        st.metric("Iterações do Agente", diag.iteration_count)
+        col_m1, col_m2 = st.columns(2)
+        with col_m1:
+            st.metric("Latência", f"{diag.turn_latency_s:.2f}s")
+        with col_m2:
+            st.metric("Iterações", diag.iteration_count)
         st.write(f"**Ferramentas Acionadas ({len(diag.tools_executed)}):**")
         for idx, t in enumerate(diag.tools_executed, 1):
             with st.expander(f"{idx}. `{t.tool_name}` ({t.duration_ms}ms)"):

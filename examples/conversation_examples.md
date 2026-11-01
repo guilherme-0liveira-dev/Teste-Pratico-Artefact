@@ -22,22 +22,22 @@ This document contains 5 detailed, authentic interaction transcripts covering ke
 - **Operational Evidence Retrieved:**
   ```text
   Encontrados 6 instrumento(s):
-  - ID 83: Tagima Memphis AC-39 Nylon Natural (Violões)
+  - **Tagima Memphis AC-39 Nylon Natural** (Violões)
     Preço: R$ 429.90 | À vista no PIX: R$ 408.41 (5% off)
     Parcelamento: 5x de R$ 85.98 sem juros | Estoque: 15 un.
-  - ID 85: Rozini RC-104 Nylon Estudante (Violões)
+  - **Rozini RC-104 Nylon Estudante** (Violões)
     Preço: R$ 459.90 | À vista no PIX: R$ 436.91 (5% off)
     Parcelamento: 5x de R$ 91.98 sem juros | Estoque: 10 un.
-  - ID 89: Shelby SN-100 Folk Aço Preto (Violões)
+  - **Shelby SN-100 Folk Aço Preto** (Violões)
     Preço: R$ 549.00 | À vista no PIX: R$ 521.55 (5% off)
     Parcelamento: 6x de R$ 91.50 sem juros | Estoque: 5 un.
-  - ID 88: Giannini GF-1R Aço Folk Sunburst (Violões)
+  - **Giannini GF-1R Aço Folk Sunburst** (Violões)
     Preço: R$ 579.90 | À vista no PIX: R$ 550.91 (5% off)
     Parcelamento: 6x de R$ 96.65 sem juros | Estoque: 7 un.
-  - ID 81: Yamaha C40 Nylon Natural (Violões)
+  - **Yamaha C40 Nylon Natural** (Violões)
     Preço: R$ 599.90 | À vista no PIX: R$ 569.90 (5% off)
     Parcelamento: 6x de R$ 99.98 sem juros | Estoque: 12 un.
-  - ID 84: Giannini GN-15 Nylon Cedr Natural (Violões)
+  - **Giannini GN-15 Nylon Cedr Natural** (Violões)
     Preço: R$ 689.00 | À vista no PIX: R$ 654.55 (5% off)
     Parcelamento: 6x de R$ 114.83 sem juros | Estoque: 6 un.
   ```
