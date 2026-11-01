@@ -42,6 +42,11 @@ class BaseLLMProvider(ABC):
         """Execute chat completion with optional structured tool calling."""
         pass
 
+    @abstractmethod
+    def verify_connection(self) -> tuple[bool, str]:
+        """Verify if provider endpoint is reachable and authenticated."""
+        pass
+
 
 class OpenAICompatibleProvider(BaseLLMProvider):
     """OpenAI and NVIDIA NIM compatible provider."""
@@ -58,12 +63,46 @@ class OpenAICompatibleProvider(BaseLLMProvider):
         self.model = model or settings.LLM_MODEL
         self.temperature = temperature if temperature is not None else settings.LLM_TEMPERATURE
 
-        # Initialize OpenAI client with custom base_url (NVIDIA NIM endpoint)
+        # Initialize OpenAI client with custom base_url (NVIDIA NIM or Ollama endpoint)
         self.client = OpenAI(
             api_key=self.api_key or "no-key-provided",
             base_url=self.base_url,
             timeout=30.0,
         )
+
+    def verify_connection(self) -> tuple[bool, str]:
+        """Test if the endpoint and model are reachable and credentials are valid."""
+        try:
+            self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": "ping"}],
+                max_tokens=2,
+                timeout=6.0,
+            )
+            return True, f"Conexão ativa com sucesso! Modelo '{self.model}' respondeu."
+        except Exception as e:
+            err_msg = str(e)
+            if (
+                "Connection" in err_msg
+                or "Failed to connect" in err_msg
+                or "11434" in err_msg
+                or "refused" in err_msg.lower()
+            ):
+                return (
+                    False,
+                    f"Servidor inacessível em {self.base_url}. Verifique se o serviço (ex: Ollama) está rodando.",
+                )
+            if (
+                "Authentication" in err_msg
+                or "401" in err_msg
+                or "Unauthorized" in err_msg.lower()
+                or "invalid api key" in err_msg.lower()
+            ):
+                return (
+                    False,
+                    "Chave de API inválida ou ausente. Verifique sua chave no build.nvidia.com.",
+                )
+            return False, f"Falha na conexão: {err_msg[:140]}"
 
     def chat_completion(
         self,
@@ -120,6 +159,10 @@ class MockLLMProvider(BaseLLMProvider):
 
     def set_responses(self, responses: list[LLMResponse]) -> None:
         self.responses = responses
+
+    def verify_connection(self) -> tuple[bool, str]:
+        """Mock provider is always available offline."""
+        return True, "Modo Demonstração Offline ativo (Simulador determinístico)."
 
     def chat_completion(
         self,

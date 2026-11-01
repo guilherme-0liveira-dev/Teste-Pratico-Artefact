@@ -1,4 +1,4 @@
-"""Streamlit web application for Empório AI with a premium Glassmorphism theme."""
+"""Streamlit web application for Empório AI with Adobe Color Palette & Glassmorphism."""
 
 import os
 import sys
@@ -23,149 +23,136 @@ st.set_page_config(
 )
 
 # ============================================================================
-# Glassmorphism Design System (CSS)
+# Glassmorphism Design System (Adobe Color Palette: #121212, #D6FF00, #BCBCBC, #FFFFFF)
 # ============================================================================
 
 GLASS_CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-/* Global Font & App Styling */
+/* Global Font & App Reset */
 html, body, [class*="css"] {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #F7F7F7;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5 {
     font-family: 'Outfit', sans-serif;
     letter-spacing: -0.02em;
+    color: #FFFFFF !important;
 }
 
-/* Background Ambient Lighting */
+/* Background Ambient Lighting (Dark Onyx #121212 + Cyber Lime #D6FF00 Accents) */
 .stApp {
-    background: radial-gradient(circle at 15% 15%, rgba(67, 56, 202, 0.18) 0%, transparent 40%),
-                radial-gradient(circle at 85% 25%, rgba(217, 70, 239, 0.12) 0%, transparent 45%),
-                radial-gradient(circle at 50% 80%, rgba(14, 165, 233, 0.10) 0%, transparent 50%),
-                #0a0d14 !important;
+    background: radial-gradient(circle at 10% 10%, rgba(214, 255, 0, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 90% 20%, rgba(188, 188, 188, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 50% 90%, rgba(214, 255, 0, 0.05) 0%, transparent 50%),
+                #121212 !important;
     background-attachment: fixed !important;
-    color: #f1f5f9;
 }
 
 /* Glassmorphism Containers */
-.glass-card {
-    background: rgba(255, 255, 255, 0.035);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.35);
-    margin-bottom: 1.25rem;
-    transition: all 0.3s ease;
-}
-
-.glass-card:hover {
-    border-color: rgba(255, 255, 255, 0.16);
-    box-shadow: 0 16px 48px 0 rgba(99, 102, 241, 0.15);
-}
-
 .glass-header {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%);
+    background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(188, 188, 188, 0.18);
     border-radius: 20px;
-    padding: 1.75rem 2rem;
-    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.5);
+    padding: 1.5rem 2rem;
+    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7);
     margin-bottom: 1.5rem;
 }
 
 /* Sidebar Glass Effect */
 [data-testid="stSidebar"] {
-    background: rgba(10, 13, 20, 0.75) !important;
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(18, 18, 18, 0.88) !important;
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border-right: 1px solid rgba(188, 188, 188, 0.12);
 }
 
 /* Glass Chat Bubbles */
 [data-testid="stChatMessage"] {
-    background: rgba(255, 255, 255, 0.03) !important;
-    backdrop-filter: blur(14px) !important;
-    -webkit-backdrop-filter: blur(14px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    background: rgba(255, 255, 255, 0.035) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(188, 188, 188, 0.12) !important;
     border-radius: 16px !important;
     margin-bottom: 1rem !important;
-    padding: 1rem 1.25rem !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+    padding: 1rem 1.4rem !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Custom User Bubble */
+/* Custom User Bubble (Neon Lime #D6FF00 Accent Border) */
 [data-testid="stChatMessage"]:nth-child(even) {
-    border-left: 3px solid #6366f1 !important;
-    background: rgba(99, 102, 241, 0.06) !important;
+    border-left: 4px solid #D6FF00 !important;
+    background: rgba(214, 255, 0, 0.03) !important;
 }
 
-/* Custom Assistant Bubble */
+/* Custom Assistant Bubble (Chrome #BCBCBC Accent Border) */
 [data-testid="stChatMessage"]:nth-child(odd) {
-    border-left: 3px solid #a855f7 !important;
+    border-left: 4px solid #BCBCBC !important;
 }
 
-/* Buttons with Glass Glow */
+/* Buttons with Neon Cyber Lime Glow */
 .stButton > button {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(168, 85, 247, 0.25) 100%) !important;
-    backdrop-filter: blur(10px) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    backdrop-filter: blur(12px) !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(188, 188, 188, 0.25) !important;
     border-radius: 12px !important;
     padding: 0.6rem 1.2rem !important;
-    font-weight: 500 !important;
+    font-weight: 600 !important;
     transition: all 0.25s ease !important;
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2) !important;
 }
 
 .stButton > button:hover {
-    transform: translateY(-2px) !important;
-    border-color: rgba(255, 255, 255, 0.35) !important;
-    box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4) !important;
+    background: #D6FF00 !important;
+    color: #121212 !important;
+    border-color: #D6FF00 !important;
+    box-shadow: 0 0 20px rgba(214, 255, 0, 0.6) !important;
+    transform: translateY(-2px);
 }
 
 /* Inputs styling */
 .stTextInput > div > div > input {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(188, 188, 188, 0.2) !important;
     border-radius: 10px !important;
-    color: #f8fafc !important;
+    color: #FFFFFF !important;
 }
 
 .stTextInput > div > div > input:focus {
-    border-color: #6366f1 !important;
-    box-shadow: 0 0 12px rgba(99, 102, 241, 0.4) !important;
+    border-color: #D6FF00 !important;
+    box-shadow: 0 0 16px rgba(214, 255, 0, 0.3) !important;
 }
 
-/* Status Chips */
-.badge-glass {
+/* Badges */
+.badge-lime {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.35rem 0.85rem;
+    padding: 0.4rem 1rem;
     border-radius: 9999px;
     font-size: 0.85rem;
-    font-weight: 500;
-    background: rgba(34, 197, 94, 0.12);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    color: #4ade80;
+    font-weight: 700;
+    background: rgba(214, 255, 0, 0.12);
+    border: 1px solid #D6FF00;
+    color: #D6FF00;
+    box-shadow: 0 0 14px rgba(214, 255, 0, 0.25);
 }
-.badge-mock {
+
+.badge-silver {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.35rem 0.85rem;
+    padding: 0.4rem 1rem;
     border-radius: 9999px;
     font-size: 0.85rem;
-    font-weight: 500;
-    background: rgba(234, 179, 8, 0.12);
-    border: 1px solid rgba(234, 179, 8, 0.3);
-    color: #facc15;
+    font-weight: 600;
+    background: rgba(188, 188, 188, 0.1);
+    border: 1px solid rgba(188, 188, 188, 0.4);
+    color: #BCBCBC;
 }
 </style>
 """
@@ -179,9 +166,9 @@ st.markdown(GLASS_CSS, unsafe_allow_html=True)
 
 
 def initialize_session_state() -> None:
-    """Initialize conversation history, provider settings, and orchestrator."""
+    """Initialize conversation history, provider settings, and notifications."""
     if "configured_provider" not in st.session_state:
-        # Default initialization: check environment variables
+        # Check environment keys
         env_key = os.getenv("LLM_API_KEY", settings.LLM_API_KEY)
         has_nvidia_key = bool(env_key and env_key != "your_nvidia_api_key_here")
 
@@ -190,17 +177,19 @@ def initialize_session_state() -> None:
             st.session_state.api_key = env_key
             st.session_state.model_name = settings.LLM_MODEL
             st.session_state.base_url = settings.LLM_BASE_URL
+            st.session_state.status_text = f"NVIDIA NIM ({settings.LLM_MODEL})"
             provider = OpenAICompatibleProvider(
                 api_key=env_key,
                 base_url=settings.LLM_BASE_URL,
                 model=settings.LLM_MODEL,
             )
         else:
-            # Check if local Ollama might be configured or fallback to mock
+            # Safe default: Mock offline demo
             st.session_state.provider_type = "mock"
             st.session_state.api_key = ""
             st.session_state.model_name = "Mock Offline"
             st.session_state.base_url = ""
+            st.session_state.status_text = "Modo Demonstração Offline"
             provider = MockLLMProvider()
 
         st.session_state.orchestrator = AgentOrchestrator(provider=provider)
@@ -213,10 +202,10 @@ def initialize_session_state() -> None:
                 "content": (
                     "Olá! 🎶 Seja muito bem-vindo(a) à **Empório da Música**!\n\n"
                     "Sou o **Empório AI**, seu assistente especializado em instrumentos musicais. "
-                    "Posso ajudar você a encontrar o instrumento ideal em nosso catálogo, consultar estoque e preços, "
+                    "Posso ajudar você a encontrar o instrumento ideal em nosso catálogo, consultar estoque e preços em tempo real, "
                     "calcular condições de parcelamento sem juros e desconto de 5% no PIX, verificar o status do seu pedido "
                     "ou tirar dúvidas sobre nossas políticas de entrega e garantia.\n\n"
-                    "Como posso ajudar a sua música hoje?"
+                    "Como posso ajudar sua música hoje?"
                 ),
             }
         ]
@@ -224,34 +213,39 @@ def initialize_session_state() -> None:
     if "last_diagnostics" not in st.session_state:
         st.session_state.last_diagnostics = None
 
+    if "toast_message" in st.session_state:
+        msg, icon = st.session_state.pop("toast_message")
+        st.toast(msg, icon=icon)
+
 
 initialize_session_state()
 
 
 # ============================================================================
-# Top Glass Header & First-Access Configuration Card
+# Glass Header with Status Badge
 # ============================================================================
 
-status_badge = (
-    f'<span class="badge-glass">🟢 {st.session_state.provider_type.upper()} ({st.session_state.model_name})</span>'
-    if st.session_state.provider_type != "mock"
-    else '<span class="badge-mock">⚡ MODO DEMONSTRAÇÃO (OFFLINE)</span>'
-)
+if st.session_state.provider_type == "nvidia":
+    badge_html = f'<span class="badge-lime">🟢 {st.session_state.status_text}</span>'
+elif st.session_state.provider_type == "ollama":
+    badge_html = f'<span class="badge-lime">💻 {st.session_state.status_text}</span>'
+else:
+    badge_html = '<span class="badge-silver">⚡ MODO DEMONSTRAÇÃO (OFFLINE)</span>'
 
 st.markdown(
     f"""
     <div class="glass-header">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div>
-                <h1 style="margin: 0; font-size: 2.2rem; font-weight: 700; background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; color: #FFFFFF;">
                     🎸 Empório AI
                 </h1>
-                <p style="margin: 0.25rem 0 0 0; color: #94a3b8; font-size: 1.05rem;">
-                    Atendimento Inteligente — Empório da Música | Campo Grande - MS
+                <p style="margin: 0.35rem 0 0 0; color: #BCBCBC; font-size: 1.05rem;">
+                    Atendimento Inteligente — <strong style="color: #D6FF00;">Empório da Música</strong> | Campo Grande - MS
                 </p>
             </div>
             <div>
-                {status_badge}
+                {badge_html}
             </div>
         </div>
     </div>
@@ -259,103 +253,133 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# First Access / Quick Model Switcher Glass Card (Collapsible)
+
+# ============================================================================
+# First-Access Setup & Connection Testing Glass Card
+# ============================================================================
+
 with st.expander(
-    "⚙️ Configuração do Modelo & Chave de API (NVIDIA NIM / Ollama / Mock)",
+    "⚙️ Configurar Conexão do Modelo (NVIDIA NIM / Ollama / Mock)",
     expanded=(st.session_state.provider_type == "mock"),
 ):
-    st.markdown("Configure sua conexão em tempo real sem precisar reiniciar a aplicação:")
+    st.markdown("Selecione e teste o provedor de LLM que deseja utilizar:")
     tab_nvidia, tab_ollama, tab_mock = st.tabs(
-        ["🚀 NVIDIA NIM (Cloud Free)", "💻 Ollama (Local Privado)", "⚡ Modo Demonstração (Mock)"]
+        [
+            "🚀 NVIDIA NIM (Cloud Free)",
+            "💻 Ollama (Local Privado)",
+            "⚡ Modo Demonstração (Mock Offline)",
+        ]
     )
 
+    # 1. NVIDIA NIM TAB
     with tab_nvidia:
-        st.caption(
-            "Acesse modelos de última geração gratuitamente em [build.nvidia.com](https://build.nvidia.com)."
-        )
+        st.caption("Obtenha sua chave gratuita em [build.nvidia.com](https://build.nvidia.com).")
         col_nv1, col_nv2 = st.columns([2, 1])
         with col_nv1:
-            nv_key_input = st.text_input(
+            nv_key = st.text_input(
                 "NVIDIA API Key:",
                 value=st.session_state.api_key
                 if st.session_state.provider_type == "nvidia"
                 else "",
                 type="password",
                 placeholder="nvapi-...",
-                key="input_nv_key",
+                key="nv_key_input",
             )
         with col_nv2:
-            nv_model_input = st.text_input(
+            nv_model = st.text_input(
                 "Modelo:",
                 value=settings.LLM_MODEL,
-                key="input_nv_model",
+                key="nv_model_input",
             )
-        if st.button("Conectar NVIDIA NIM", key="btn_connect_nvidia", use_container_width=True):
-            if nv_key_input:
-                try:
-                    new_provider = OpenAICompatibleProvider(
-                        api_key=nv_key_input,
-                        base_url=settings.LLM_BASE_URL,
-                        model=nv_model_input,
-                    )
-                    st.session_state.orchestrator = AgentOrchestrator(provider=new_provider)
-                    st.session_state.provider_type = "nvidia"
-                    st.session_state.api_key = nv_key_input
-                    st.session_state.model_name = nv_model_input
-                    st.session_state.base_url = settings.LLM_BASE_URL
-                    st.success("Conectado ao NVIDIA NIM com sucesso!")
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"Erro ao conectar: {e}")
-            else:
-                st.warning("Por favor, insira a sua NVIDIA API Key.")
 
+        col_btn1, col_btn2 = st.columns([1, 1])
+        with col_btn1:
+            if st.button("Conectar e Testar NVIDIA NIM", key="btn_nv_connect"):
+                if not nv_key.strip():
+                    st.error("Por favor, insira sua chave NVIDIA API Key (começa com 'nvapi-').")
+                else:
+                    with st.spinner("Testando conexão com NVIDIA NIM..."):
+                        test_provider = OpenAICompatibleProvider(
+                            api_key=nv_key.strip(),
+                            base_url=settings.LLM_BASE_URL,
+                            model=nv_model.strip(),
+                        )
+                        ok, info = test_provider.verify_connection()
+                        if ok:
+                            st.session_state.orchestrator = AgentOrchestrator(
+                                provider=test_provider
+                            )
+                            st.session_state.provider_type = "nvidia"
+                            st.session_state.api_key = nv_key.strip()
+                            st.session_state.model_name = nv_model.strip()
+                            st.session_state.base_url = settings.LLM_BASE_URL
+                            st.session_state.status_text = f"NVIDIA NIM ({nv_model.strip()})"
+                            st.session_state.toast_message = (
+                                "NVIDIA NIM conectado e validado!",
+                                "🚀",
+                            )
+                            st.rerun()
+                        else:
+                            st.error(f"Erro na conexão: {info}")
+
+    # 2. OLLAMA TAB
     with tab_ollama:
-        st.caption("Conecte-se à sua instância local do Ollama rodando no seu computador.")
+        st.caption(
+            "Conecte-se a uma instância do Ollama rodando localmente (ex: `ollama run qwen2.5-coder:7b`)."
+        )
         col_ol1, col_ol2 = st.columns([2, 1])
         with col_ol1:
-            ol_url_input = st.text_input(
+            ol_url = st.text_input(
                 "Endpoint Ollama:",
                 value=settings.OLLAMA_BASE_URL,
-                key="input_ol_url",
+                key="ol_url_input",
             )
         with col_ol2:
-            ol_model_input = st.text_input(
+            ol_model = st.text_input(
                 "Modelo Local:",
                 value=settings.OLLAMA_MODEL,
-                key="input_ol_model",
+                key="ol_model_input",
             )
-        if st.button("Conectar Ollama Local", key="btn_connect_ollama", use_container_width=True):
-            try:
-                new_provider = OpenAICompatibleProvider(
-                    api_key="ollama",
-                    base_url=ol_url_input,
-                    model=ol_model_input,
-                )
-                st.session_state.orchestrator = AgentOrchestrator(provider=new_provider)
-                st.session_state.provider_type = "ollama"
-                st.session_state.api_key = "ollama"
-                st.session_state.model_name = ol_model_input
-                st.session_state.base_url = ol_url_input
-                st.success(f"Conectado ao Ollama local ({ol_model_input})!")
-                st.rerun()
-            except Exception as e:
-                st.error(f"Erro ao conectar ao Ollama: {e}")
 
+        if st.button("Conectar e Testar Ollama Local", key="btn_ol_connect"):
+            with st.spinner("Testando conexão com Ollama local..."):
+                test_provider = OpenAICompatibleProvider(
+                    api_key="ollama",
+                    base_url=ol_url.strip(),
+                    model=ol_model.strip(),
+                )
+                ok, info = test_provider.verify_connection()
+                if ok:
+                    st.session_state.orchestrator = AgentOrchestrator(provider=test_provider)
+                    st.session_state.provider_type = "ollama"
+                    st.session_state.api_key = "ollama"
+                    st.session_state.model_name = ol_model.strip()
+                    st.session_state.base_url = ol_url.strip()
+                    st.session_state.status_text = f"Ollama Local ({ol_model.strip()})"
+                    st.session_state.toast_message = (
+                        f"Ollama local conectado com sucesso ({ol_model.strip()})!",
+                        "💻",
+                    )
+                    st.rerun()
+                else:
+                    st.warning(f"{info}\nDica: Verifique se executou `ollama serve` no terminal.")
+
+    # 3. MOCK OFFLINE TAB
     with tab_mock:
         st.caption(
-            "Utilize o simulador determinístico offline com respostas predefinidas para testes rápidos sem consumir rede."
+            "Modo de teste determinístico offline com respostas rápidas e execução das ferramentas reais."
         )
-        if st.button("Ativar Modo Mock Offline", key="btn_connect_mock", use_container_width=True):
+        if st.button("Ativar Modo Demonstração Offline", key="btn_mock_connect"):
             st.session_state.orchestrator = AgentOrchestrator(provider=MockLLMProvider())
             st.session_state.provider_type = "mock"
             st.session_state.model_name = "Mock Offline"
-            st.info("Modo de teste determinístico ativado.")
+            st.session_state.status_text = "Modo Demonstração Offline"
+            st.session_state.toast_message = ("Modo Demonstração Offline Ativado!", "⚡")
             st.rerun()
 
 
 # ============================================================================
-# Sidebar: Information & Technical Diagnostics
+# Sidebar: Store Info & Diagnostics
 # ============================================================================
 
 with st.sidebar:
@@ -363,7 +387,7 @@ with st.sidebar:
         """
         <div style="text-align: center; margin-bottom: 1rem;">
             <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&auto=format&fit=crop&q=80"
-                 style="width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 16px rgba(0,0,0,0.4);" />
+                 style="width: 100%; border-radius: 12px; border: 1px solid rgba(188,188,188,0.2); box-shadow: 0 4px 16px rgba(0,0,0,0.6);" />
         </div>
         """,
         unsafe_allow_html=True,
@@ -395,10 +419,11 @@ with st.sidebar:
         st.caption("Nenhuma ferramenta acionada ainda nesta sessão.")
 
     st.markdown("---")
-    if st.button("🗑️ Reiniciar Conversa", key="btn_reset_chat", use_container_width=True):
+    if st.button("🗑️ Reiniciar Conversa", key="btn_reset_chat"):
         st.session_state.orchestrator.reset()
         st.session_state.messages = []
         st.session_state.last_diagnostics = None
+        st.session_state.toast_message = ("Histórico de conversa reiniciado!", "🗑️")
         st.rerun()
 
 
@@ -411,16 +436,16 @@ st.markdown("##### 💡 Sugestões Rápidas de Consulta:")
 c1, c2, c3, c4 = st.columns(4)
 prompt_to_send = None
 
-if c1.button("🎸 Violões até R$ 1.000", use_container_width=True):
+if c1.button("🎸 Violões até R$ 1.000", key="sugg_1"):
     prompt_to_send = "Quais opções de violões disponíveis custando até R$ 1.000?"
 
-if c2.button("📍 Endereço e Horário", use_container_width=True):
+if c2.button("📍 Endereço e Horário", key="sugg_2"):
     prompt_to_send = "Qual o endereço da loja e horário de funcionamento?"
 
-if c3.button("📦 Status do Pedido #8", use_container_width=True):
+if c3.button("📦 Status do Pedido #8", key="sugg_3"):
     prompt_to_send = "Gostaria de saber o status do meu pedido número 8."
 
-if c4.button("🔄 Devolução em 15 dias?", use_container_width=True):
+if c4.button("🔄 Devolução em 15 dias?", key="sugg_4"):
     prompt_to_send = (
         "Me arrependi da compra do meu violão há 15 dias pela internet, posso devolver?"
     )
@@ -444,7 +469,7 @@ if user_input:
 
     # 2. Process turn via Agent Orchestrator
     with st.chat_message("assistant"):
-        with st.spinner("Consultando dados e políticas do Empório..."):
+        with st.spinner("Consultando dados e políticas da Empório da Música..."):
             turn_result: AgentTurnResult = st.session_state.orchestrator.handle_message(user_input)
             st.markdown(turn_result.response_text)
 
