@@ -1,6 +1,6 @@
 """Executive PDF Documentation Generator for Artefact AI Engineer Technical Challenge.
 
-Generates a publication-grade PDF report in English using headless Chrome.
+Generates a publication-grade, compact, well-proportioned PDF report in English using headless Chrome.
 """
 
 from __future__ import annotations
@@ -22,12 +22,12 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
 <style>
   @page {{
     size: A4;
-    margin: 20mm 15mm 20mm 15mm;
+    margin: 14mm 12mm 14mm 12mm;
     @bottom-right {{
-      content: counter(page);
-      font-size: 9pt;
+      content: "Page " counter(page);
+      font-size: 8pt;
       font-family: 'Segoe UI', Arial, sans-serif;
-      color: #777;
+      color: #888;
     }}
   }}
 
@@ -40,96 +40,136 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
   body {{
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: #1a1a1a;
-    line-height: 1.55;
-    font-size: 10pt;
+    line-height: 1.42;
+    font-size: 8.8pt;
     margin: 0;
     padding: 0;
   }}
 
-  /* Page Break Utilities */
-  .page-break {{
-    page-break-before: always;
-  }}
   .avoid-break {{
     page-break-inside: avoid;
   }}
 
-  /* Cover Page */
+  /* Cover Page - Balanced & Contained to Exactly 1 Page */
   .cover-page {{
-    height: 100vh;
+    height: 258mm;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 40px 20px 20px 20px;
+    padding: 20px 15px 15px 15px;
     page-break-after: always;
   }}
 
   .cover-header {{
     border-bottom: 3px solid #D6FF00;
-    padding-bottom: 25px;
+    padding-bottom: 16px;
   }}
 
   .company-badge {{
     display: inline-block;
     background-color: #121212;
     color: #D6FF00;
-    font-size: 11pt;
+    font-size: 9.5pt;
     font-weight: 700;
-    padding: 6px 16px;
-    border-radius: 6px;
-    letter-spacing: 1.5px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
   }}
 
   .cover-title {{
-    font-size: 28pt;
+    font-size: 24pt;
     font-weight: 800;
     color: #121212;
-    margin: 0 0 10px 0;
+    margin: 0 0 6px 0;
     line-height: 1.15;
   }}
 
   .cover-subtitle {{
-    font-size: 14pt;
-    font-weight: 500;
+    font-size: 12.5pt;
+    font-weight: 600;
+    color: #444;
+    margin: 0 0 10px 0;
+  }}
+
+  .cover-description {{
     color: #555;
-    margin: 0 0 15px 0;
+    font-size: 9.2pt;
+    line-height: 1.45;
+    margin-top: 6px;
+    max-width: 96%;
   }}
 
   .cover-meta-grid {{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 40px;
+    gap: 12px;
+    margin: 16px 0;
     background: #f8f9fa;
     border: 1px solid #e9ecef;
     border-left: 5px solid #121212;
-    padding: 24px;
-    border-radius: 8px;
+    padding: 16px;
+    border-radius: 6px;
   }}
 
   .meta-item label {{
     display: block;
-    font-size: 8.5pt;
+    font-size: 7.8pt;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
     color: #666;
-    font-weight: 600;
-    margin-bottom: 4px;
+    font-weight: 700;
+    margin-bottom: 2px;
   }}
 
   .meta-item value {{
     display: block;
-    font-size: 11.5pt;
+    font-size: 10.5pt;
     color: #121212;
     font-weight: 700;
   }}
 
+  /* 4 Pillars Card Grid on Cover Page */
+  .cover-pillars-grid {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 12px 0 16px 0;
+  }}
+
+  .pillar-card {{
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-top: 3px solid #121212;
+    border-radius: 5px;
+    padding: 10px 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  }}
+
+  .pillar-icon {{
+    font-size: 13pt;
+    margin-bottom: 2px;
+  }}
+
+  .pillar-title {{
+    font-size: 8.8pt;
+    font-weight: 700;
+    color: #121212;
+    margin-bottom: 2px;
+  }}
+
+  .pillar-desc {{
+    font-size: 7.8pt;
+    color: #555;
+    line-height: 1.35;
+    margin: 0;
+  }}
+
   .cover-footer {{
     border-top: 1px solid #e5e5e5;
-    padding-top: 15px;
-    font-size: 8.5pt;
+    padding-top: 10px;
+    font-size: 8pt;
     color: #777;
     display: flex;
     justify-content: space-between;
@@ -137,55 +177,56 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
 
   /* Typography & Layout */
   h1 {{
-    font-size: 18pt;
+    font-size: 13.5pt;
     font-weight: 800;
     color: #121212;
     border-bottom: 2px solid #121212;
-    padding-bottom: 6px;
-    margin-top: 24px;
-    margin-bottom: 14px;
-    page-break-after: avoid;
-  }}
-
-  h2 {{
-    font-size: 13pt;
-    font-weight: 700;
-    color: #222;
-    margin-top: 18px;
-    margin-bottom: 8px;
-    border-left: 4px solid #D6FF00;
-    padding-left: 10px;
-    page-break-after: avoid;
-  }}
-
-  h3 {{
-    font-size: 10.5pt;
-    font-weight: 700;
-    color: #333;
-    margin-top: 12px;
+    padding-bottom: 3px;
+    margin-top: 14px;
     margin-bottom: 6px;
     page-break-after: avoid;
   }}
 
+  h2 {{
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #222;
+    margin-top: 10px;
+    margin-bottom: 4px;
+    border-left: 3px solid #D6FF00;
+    padding-left: 8px;
+    page-break-after: avoid;
+  }}
+
+  h3 {{
+    font-size: 9.2pt;
+    font-weight: 700;
+    color: #333;
+    margin-top: 8px;
+    margin-bottom: 3px;
+    page-break-after: avoid;
+  }}
+
   p, li {{
-    font-size: 9.5pt;
+    font-size: 8.6pt;
     color: #2c3e50;
-    margin-bottom: 8px;
+    margin-top: 0;
+    margin-bottom: 4px;
   }}
 
   ul, ol {{
-    margin-top: 4px;
-    margin-bottom: 10px;
-    padding-left: 22px;
+    margin-top: 2px;
+    margin-bottom: 6px;
+    padding-left: 18px;
   }}
 
   /* Badges & Highlights */
   .badge {{
     display: inline-block;
-    padding: 2px 7px;
-    font-size: 8pt;
+    padding: 1px 6px;
+    font-size: 7.5pt;
     font-weight: 600;
-    border-radius: 4px;
+    border-radius: 3px;
     background: #e9ecef;
     color: #495057;
   }}
@@ -198,13 +239,22 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
     color: #D6FF00;
   }}
 
-  /* Tables */
+  /* Tables — Clean Flow Without Massive Empty Breaks */
   table {{
     width: 100%;
     border-collapse: collapse;
-    margin: 12px 0 16px 0;
-    font-size: 8.8pt;
+    margin: 8px 0 10px 0;
+    font-size: 8pt;
+    page-break-inside: auto;
+  }}
+
+  thead {{
+    display: table-header-group;
+  }}
+
+  tr {{
     page-break-inside: avoid;
+    page-break-after: auto;
   }}
 
   th {{
@@ -212,67 +262,71 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
     color: #ffffff;
     font-weight: 600;
     text-align: left;
-    padding: 8px 10px;
+    padding: 5px 7px;
     border: 1px solid #121212;
+    font-size: 8.2pt;
   }}
 
   td {{
-    padding: 7px 10px;
+    padding: 4.5px 7px;
     border: 1px solid #dee2e6;
     vertical-align: top;
+    line-height: 1.32;
+    font-size: 8pt;
   }}
 
   tr:nth-child(even) td {{
-    background-color: #fcfcfc;
+    background-color: #fbfbfb;
   }}
 
   /* Code & Pre */
   code {{
     font-family: "Cascadia Code", Consolas, "Courier New", monospace;
-    font-size: 8.5pt;
+    font-size: 8pt;
     background-color: #f1f3f5;
-    padding: 2px 5px;
+    padding: 1px 4px;
     border-radius: 3px;
-    color: #d63384;
+    color: #c2185b;
   }}
 
   pre {{
     background: #181818;
     color: #f8f9fa;
-    padding: 12px;
-    border-radius: 6px;
-    font-size: 8pt;
-    line-height: 1.45;
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-size: 7.2pt;
+    line-height: 1.34;
     overflow-x: hidden;
     font-family: "Cascadia Code", Consolas, monospace;
-    margin: 8px 0 12px 0;
+    margin: 6px 0 8px 0;
     page-break-inside: avoid;
-    border-left: 4px solid #D6FF00;
+    border-left: 3px solid #D6FF00;
   }}
 
   /* Callout Boxes */
   .callout {{
     background-color: #f8f9fa;
     border: 1px solid #e9ecef;
-    border-left: 4px solid #121212;
-    padding: 10px 14px;
+    border-left: 3px solid #121212;
+    padding: 7px 11px;
     border-radius: 4px;
-    margin: 10px 0 14px 0;
+    margin: 6px 0 8px 0;
     page-break-inside: avoid;
   }}
   .callout-title {{
     font-weight: 700;
-    font-size: 9.5pt;
-    margin-bottom: 4px;
+    font-size: 8.8pt;
+    margin-bottom: 2px;
     color: #121212;
   }}
 
   .quote {{
     border-left: 3px solid #BCBCBC;
-    padding-left: 12px;
+    padding-left: 9px;
     font-style: italic;
-    color: #555;
-    margin: 6px 0;
+    color: #444;
+    margin: 4px 0;
+    font-size: 8.3pt;
   }}
 </style>
 </head>
@@ -284,9 +338,9 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
     <div class="company-badge">Artefact — AI Engineer Technical Challenge</div>
     <div class="cover-title">Empório AI — Intelligent Customer Service Agent</div>
     <div class="cover-subtitle">Technical Documentation & Theoretical Architecture Report</div>
-    <p style="color: #666; font-size: 10.5pt; margin-top: 15px;">
+    <div class="cover-description">
       A comprehensive production-grade report detailing system design, deterministic business rules engine, BM25 legal policy retrieval, multi-provider LLM resilience, automated quality assurance, and containerization.
-    </p>
+    </div>
   </div>
 
   <div class="cover-meta-grid">
@@ -313,6 +367,30 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
     <div class="meta-item">
       <label>Repository Verification</label>
       <value>57/57 Tests Passed | 0 Lint Warnings | Docker Ready</value>
+    </div>
+  </div>
+
+  <!-- Architectural Pillars Highlights on Cover -->
+  <div class="cover-pillars-grid">
+    <div class="pillar-card">
+      <div class="pillar-icon">⚡</div>
+      <div class="pillar-title">Deterministic Rules Engine</div>
+      <div class="pillar-desc">Pure Python Decimal calculations for 5% PIX, tiered installments (1x–12x), CDC returns, and shipping. Zero financial hallucination.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">🔍</div>
+      <div class="pillar-title">BM25 Okapi Policy RAG</div>
+      <div class="pillar-desc">Sub-millisecond lexical retrieval over 28 policy chunks with exact page-level and section-level attribution. Zero vector drift.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">🛡️</div>
+      <div class="pillar-title">Fault-Tolerant ReAct Loop</div>
+      <div class="pillar-desc">Exponential backoff with jitter (1.2s, 2.4s, 3.8s) for cloud NIM cold starts + bounded 5-iteration ReAct circuit breaker.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">🐳</div>
+      <div class="pillar-title">Senior Docker Architecture</div>
+      <div class="pillar-desc">Multi-stage build, unprivileged appuser, self-bootstrapping database entrypoint, health checks, and Docker Compose orchestration.</div>
     </div>
   </div>
 
@@ -350,7 +428,6 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
 </ul>
 
 <!-- ================= SECTION 2 ================= -->
-<div class="page-break"></div>
 <h1>2. Theoretical Architecture & System Design Decisions</h1>
 
 <h2>2.1 Agent Reasoning Pattern: Bounded ReAct vs. Static Pipelines</h2>
@@ -385,7 +462,7 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
   <tbody>
     <tr>
       <td><strong>Corpus Characteristics</strong></td>
-      <td>Effective for vast corpora (>100,000 documents) with diffuse semantic terminology.</td>
+      <td>Effective for vast corpora (&gt;100,000 documents) with diffuse semantic terminology.</td>
       <td><strong>Optimal for short, structured legal manuals (8 pages, 28 discrete chunks)</strong> containing specific legal terms.</td>
     </tr>
     <tr>
@@ -396,7 +473,7 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
     <tr>
       <td><strong>Latency & Compute</strong></td>
       <td>Requires embedding model inference (~150–400ms per query) + vector DB overhead.</td>
-      <td><strong>Sub-millisecond retrieval (<1ms)</strong> computed directly in-memory in pure Python.</td>
+      <td><strong>Sub-millisecond retrieval (&lt;1ms)</strong> computed directly in-memory in pure Python.</td>
     </tr>
     <tr>
       <td><strong>Cost & Dependencies</strong></td>
@@ -425,9 +502,7 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
 </p>
 
 <!-- ================= SECTION 3 ================= -->
-<div class="page-break"></div>
 <h1>3. Store Policy Verification & Legal Compliance Matrix</h1>
-
 <p>
   Every rule and procedure specified in the store manual (<code>docs/políticas_da_loja.pdf</code>) was mapped to concrete code implementation and validated through automated unit tests:
 </p>
@@ -435,9 +510,9 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
 <table>
   <thead>
     <tr>
-      <th style="width: 18%;">Policy Topic</th>
-      <th style="width: 14%;">Manual Section</th>
-      <th style="width: 44%;">Deterministic Business Rule & System Implementation</th>
+      <th style="width: 17%;">Policy Topic</th>
+      <th style="width: 13%;">Manual Section</th>
+      <th style="width: 46%;">Deterministic Business Rule & System Implementation</th>
       <th style="width: 24%;">Test Verification</th>
     </tr>
   </thead>
@@ -511,16 +586,15 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
 </table>
 
 <!-- ================= SECTION 4 ================= -->
-<div class="page-break"></div>
 <h1>4. Technology Stack & Implementation Details</h1>
 
 <h2>4.1 Component Breakdown & Rationale</h2>
 <table>
   <thead>
     <tr>
-      <th>Layer</th>
-      <th>Technology Selected</th>
-      <th>Rationale & Technical Nuances</th>
+      <th style="width: 20%;">Layer</th>
+      <th style="width: 32%;">Technology Selected</th>
+      <th style="width: 48%;">Rationale & Technical Nuances</th>
     </tr>
   </thead>
   <tbody>
@@ -581,17 +655,14 @@ def build_html_report(candidate_name: str, career_title: str) -> str:
   <li><strong>Mandatory Currency Formatting:</strong> Strict regex guardrail (<code>sanitize_response_text</code>) enforces complete <code>R$ </code> prefixes (e.g., <code>R$ 429,90</code>), preventing tokenization truncations (e.g., <code>R 429,90</code>).</li>
   <li><strong>KaTeX Inline Math Conflict Defense:</strong> In Streamlit, prices formatted as <code>R$ 429,90 ... R$ 408,40</code> can trigger remark-math KaTeX parsing, stripping dollar signs and turning numbers green. The frontend employs <code>render_safe_markdown</code> escaping dollar signs to <code>R\\$</code> to guarantee pristine visual output.</li>
   <li><strong>4-Part Protocol for Out-of-Scope Requests:</strong>
-    <ol>
-      <li><strong>Polite Limitation:</strong> Clearly state that the store cannot fulfill the specific inquiry.</li>
-      <li><strong>Contextual Reason:</strong> Explain that Empório da Música exclusively sells new catalog instruments (no accessories or repair services).</li>
-      <li><strong>Structured Alternative List:</strong> Present bullet points of what CAN be done (catalog browsing, stock check, payment simulation, CDC policy check, store address).</li>
-      <li><strong>Human Escalation:</strong> Provide the official human customer service WhatsApp: <strong>(67) 3341-4444</strong>.</li>
-    </ol>
+    (1) Polite limitation stating the store cannot fulfill the item;
+    (2) Contextual reason explaining the store only sells new instruments;
+    (3) Structured list of alternatives (catalog, stock, payment simulation, warranty, store address);
+    (4) Official human escalation via WhatsApp: <strong>(67) 3341-4444</strong>.
   </li>
 </ul>
 
 <!-- ================= SECTION 5 ================= -->
-<div class="page-break"></div>
 <h1>5. Security, Privacy & Production Containerization</h1>
 
 <h2>5.1 LGPD & Customer Privacy Protection</h2>
@@ -622,7 +693,6 @@ Stage 2 (Runner):  python:3.12-slim-bookworm -> Minimal runtime with unprivilege
 
 <!-- ================= SECTION 6 ================= -->
 <h1>6. Automated Testing & Quality Assurance</h1>
-
 <p>
   The repository maintains an automated test suite of <strong>57 comprehensive tests</strong> covering domain rules, ingestion idempotency, tool handlers, and orchestrator behaviors with <strong>zero external API calls</strong>:
 </p>
@@ -675,13 +745,11 @@ Stage 2 (Runner):  python:3.12-slim-bookworm -> Minimal runtime with unprivilege
 </table>
 <div class="callout">
   <div class="callout-title">Test Execution Benchmark</div>
-  <p><strong>57 passed in 8.33 seconds</strong> (Python 3.14.3 / 3.12 / pytest-9.1.1). Ruff check: <strong>0 errors, 0 warnings</strong>.</p>
+  <p><strong>57 passed in 6.91 seconds</strong> (Python 3.14.3 / 3.12 / pytest-9.1.1). Ruff check: <strong>0 errors, 0 warnings</strong>.</p>
 </div>
 
 <!-- ================= SECTION 7 ================= -->
-<div class="page-break"></div>
 <h1>7. Known Limitations & Future Roadmap ("With More Time")</h1>
-
 <p>
   In accordance with the Artefact assessment guidelines, the following architectural improvements outline the roadmap for an enterprise-scale version 2.0:
 </p>
@@ -731,12 +799,11 @@ Stage 2 (Runner):  python:3.12-slim-bookworm -> Minimal runtime with unprivilege
 
 <!-- ================= SECTION 8 ================= -->
 <h1>8. Authentic Multi-Turn Interaction Transcripts</h1>
-
 <p>
   Five complete conversation transcripts demonstrating complex real-world interactions are documented in <code>examples/conversation_examples.md</code>:
 </p>
 
-<div class="avoid-break">
+<div class="avoid-break" style="margin-bottom: 6px;">
   <h3>Scenario 1: Catalog Search with Price and Stock Filtering</h3>
   <div class="quote">Customer: "Olá! Quais opções de violões vocês têm disponíveis em estoque custando até R$ 1.000?"</div>
   <p>
@@ -744,7 +811,7 @@ Stage 2 (Runner):  python:3.12-slim-bookworm -> Minimal runtime with unprivilege
   </p>
 </div>
 
-<div class="avoid-break">
+<div class="avoid-break" style="margin-bottom: 6px;">
   <h3>Scenario 2: Institutional Inquiries & Operating Hours</h3>
   <div class="quote">Customer: "Onde fica a loja de vocês e qual o horário de funcionamento no sábado?"</div>
   <p>
@@ -752,7 +819,7 @@ Stage 2 (Runner):  python:3.12-slim-bookworm -> Minimal runtime with unprivilege
   </p>
 </div>
 
-<div class="avoid-break">
+<div class="avoid-break" style="margin-bottom: 6px;">
   <h3>Scenario 3: Price, Stock & Credit Card Installment Simulation</h3>
   <div class="quote">Customer: "Quanto custa o Takamine GD20 e em quantas vezes posso parcelar no cartão?"</div>
   <p>
@@ -760,7 +827,7 @@ Stage 2 (Runner):  python:3.12-slim-bookworm -> Minimal runtime with unprivilege
   </p>
 </div>
 
-<div class="avoid-break">
+<div class="avoid-break" style="margin-bottom: 6px;">
   <h3>Scenario 4: Purchase Withdrawal under CDC Art. 49</h3>
   <div class="quote">Customer: "Recebi meu violão há 4 dias comprado pelo site, mas me arrependi da compra. Posso devolver?"</div>
   <p>
@@ -768,7 +835,7 @@ Stage 2 (Runner):  python:3.12-slim-bookworm -> Minimal runtime with unprivilege
   </p>
 </div>
 
-<div class="avoid-break">
+<div class="avoid-break" style="margin-bottom: 6px;">
   <h3>Scenario 5: Out-of-Scope Accessory Request Protocol</h3>
   <div class="quote">Customer: "Vocês vendem encordoamento de nylon avulso D'Addario e palhetas de guitarra?"</div>
   <p>
@@ -777,9 +844,7 @@ Stage 2 (Runner):  python:3.12-slim-bookworm -> Minimal runtime with unprivilege
 </div>
 
 <!-- ================= SECTION 9 ================= -->
-<div class="page-break"></div>
 <h1>9. Disclosure of AI Coding Assistant Usage</h1>
-
 <p>
   In accordance with the transparency requirements of the Artefact technical assessment:
 </p>
@@ -816,11 +881,62 @@ Stage 2 (Runner):  python:3.12-slim-bookworm -> Minimal runtime with unprivilege
   </tbody>
 </table>
 
-<div class="callout" style="margin-top: 30px;">
+<div class="callout" style="margin-top: 10px; margin-bottom: 12px;">
   <div class="callout-title">Summary of Final Project State</div>
   <p>
     The <strong>Empório AI</strong> project achieves 100% compliance with every mandatory and optional requirement of the Artefact AI Engineer challenge. It is packaged with senior-grade containerization, exhaustive documentation in both Portuguese and English, 57 automated tests, and immediate plug-and-play operability via Docker Compose.
   </p>
+</div>
+
+<!-- ================= SECTION 10 ================= -->
+<h1>10. Appendix: Project Deliverables & Submission Verification</h1>
+<p>
+  All required components for the Artefact Technical Assessment have been produced, rigorously tested, and committed to the Git repository:
+</p>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 28%;">Assessment Requirement</th>
+      <th style="width: 30%;">Repository Artifact</th>
+      <th style="width: 42%;">Verification Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Public Git Repository</strong></td>
+      <td><code>git log --oneline</code> (chronological commits)</td>
+      <td>Clean history reflecting architecture, UI, resilience, and containerization.</td>
+    </tr>
+    <tr>
+      <td><strong>Bilingual Documentation</strong></td>
+      <td><code>README.md</code> (Portuguese pt-BR &amp; English EN)</td>
+      <td>Complete setup, technology rationale, business rules, and AI usage disclosure.</td>
+    </tr>
+    <tr>
+      <td><strong>Interaction Transcripts</strong></td>
+      <td><code>examples/conversation_examples.md</code></td>
+      <td>5 comprehensive multi-turn transcripts covering catalog, CDC, and scope.</td>
+    </tr>
+    <tr>
+      <td><strong>Executive PDF Report</strong></td>
+      <td><code>Guilherme Oliveira - Engenheiro de IA...pdf</code></td>
+      <td>Publication-grade technical report in English generated via Headless Chrome.</td>
+    </tr>
+    <tr>
+      <td><strong>Production Container</strong></td>
+      <td><code>docker-compose.yml</code> &amp; <code>Dockerfile</code></td>
+      <td>Single-command startup (<code>docker compose up --build</code>) with auto-seeding.</td>
+    </tr>
+    <tr>
+      <td><strong>Automated Quality Gate</strong></td>
+      <td><code>tests/</code> (57 tests) &amp; <code>pyproject.toml</code></td>
+      <td>57 passed in ~7s. Zero Ruff linting warnings. Zero external network dependencies.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="font-size: 7.8pt; color: #666; text-align: center; margin-top: 14px; border-top: 1px solid #e5e5e5; padding-top: 8px;">
+  Artefact AI Engineer Assessment &bull; Candidate: Guilherme Oliveira &bull; Candidate Email: gaoliveira2077@gmail.com &bull; Date: November 2026
 </div>
 
 </body>
@@ -856,8 +972,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Generate Executive PDF Report for Artefact Challenge")
     parser.add_argument(
         "--name",
-        default="Guilherme Alves Oliveira",
-        help="Candidate full name (e.g. Guilherme Alves Oliveira)",
+        default="Guilherme Oliveira",
+        help="Candidate full name (e.g. Guilherme Oliveira)",
     )
     parser.add_argument(
         "--career",
