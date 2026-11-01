@@ -1,0 +1,35 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Testing and coverage
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.log
+
+# Git and IDE configs
+.git/
+.gitignore
+.agents/
+.claude/
+.gemini/
+.vscode/
+.idea/
+
+# Local secrets (never copy secrets into image)
+.env
+*.local.env
+
+# Temporary artifacts and scratch files
+.tempmediaStorage/
+scratch/

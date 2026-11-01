@@ -1,11 +1,12 @@
 # Empório AI — Intelligent Customer Service Agent
 
 [![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.14-blue.svg)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)](docs/DOCKER_GUIDE.md)
 [![Framework](https://img.shields.io/badge/Streamlit-1.66.1-red.svg)](https://streamlit.io/)
 [![ORM](https://img.shields.io/badge/SQLAlchemy-2.0-orange.svg)](https://www.sqlalchemy.org/)
 [![Validation](https://img.shields.io/badge/Pydantic-v2-green.svg)](https://docs.pydantic.dev/)
 [![Linting](https://img.shields.io/badge/Ruff-Passed-brightgreen.svg)](https://astral.sh/ruff)
-[![Tests](https://img.shields.io/badge/Tests-36%20Passed-success.svg)](https://docs.pytest.org/)
+[![Tests](https://img.shields.io/badge/Tests-56%20Passed-success.svg)](https://docs.pytest.org/)
 
 A production-grade, reproducible conversational customer service AI assistant engineered for **Empório da Música**, a retail musical instrument store in Campo Grande / MS, Brazil.
 
@@ -114,11 +115,34 @@ A core design principle of Empório AI is that **the LLM is never allowed to per
 
 ## 5. Setup & Installation
 
-### Prerequisites
+### Option 1: 🐳 Fast Track via Docker (Recommended — Zero Config)
+
+The entire application, database, and optional local LLM are fully containerized using a senior-grade multi-stage Docker architecture:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/emporio-ai.git
+cd emporio-ai
+
+# 2. (Optional) Configure NVIDIA NIM or Ollama in .env (or run offline demonstration mode)
+cp .env.example .env
+
+# 3. Build and launch with a single command
+docker compose up --build
+```
+Open **`http://localhost:8501`** in your browser. The container automatically seeds the database on startup if it's not present!
+
+*For advanced Docker operations (Ollama local container, health checks, volumes), see [docs/DOCKER_GUIDE.md](docs/DOCKER_GUIDE.md).*
+
+---
+
+### Option 2: 🐍 Local Python Virtual Environment
+
+#### Prerequisites
 - Python 3.11, 3.12, or higher
 - Git
 
-### Installation Steps
+#### Installation Steps
 
 ```powershell
 # 1. Clone the repository

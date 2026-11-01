@@ -1,0 +1,92 @@
+services:
+  # ============================================================================
+  # Main Application Service: Empório AI (Streamlit + Orchestrator + SQLite)
+  # ============================================================================
+  emporio-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    container_name: emporio-ai
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    environment:
+      - LLM_PROVIDER=${LLM_PROVIDER:-nvidia}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-meta/llama-3.3-70b-instruct}
+      - LLM_BASE_URL=${LLM_BASE_URL:-https://integrate.api.nvidia.com/v1}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434/v1}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5-coder:7b}
+      - DATABASE_URL=sqlite:////app/data/emporio.db
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      # Persistent storage for SQLite database and indexed catalogs
+      - emporio_data:/app/data
+    networks:
+      - emporio-network
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2G
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # Optional Local LLM Service: Ollama
+  # Activated via: docker compose --profile local-llm up
+  # ============================================================================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: emporio-ollama
+    restart: unless-stopped
+    profiles:
+      - local-llm
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    networks:
+      - emporio-network
+    deploy:
+      resources:
+        reservations:
+          memory: 4G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ==============================================================================
+# Persistent Volumes Definition
+# ==============================================================================
+volumes:
+  emporio_data:
+    name: emporio_ai_sqlite_data
+  ollama_models:
+    name: emporio_ai_ollama_models
+
+# ==============================================================================
+# Isolated Bridge Network
+# ==============================================================================
+networks:
+  emporio-network:
+    name: emporio_ai_network
+    driver: bridge

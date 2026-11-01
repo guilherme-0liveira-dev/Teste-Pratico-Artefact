@@ -121,13 +121,14 @@ Este documento consolida o mapeamento exaustivo entre as exigências do edital o
 ---
 
 ### I. Testes Automatizados & Qualidade de Código
-- [x] ✅ **54 Testes Automatizados no Pytest:**
+- [x] ✅ **56 Testes Automatizados no Pytest:**
   - 16 testes de regras de negócio financeiras e CDC.
   - 5 testes de integridade relacional e ingestão de CSV/PDF.
   - 10 testes de execução de ferramentas e catálogo.
   - 5 testes de orquestrador, limites de iteração e tratamento de falhas.
+  - 2 testes dedicados ao protocolo obrigatório de fallback para itens fora de escopo.
   - 18 testes adicionais exaustivos de recuperação BM25, pedidos e catálogo.
-- [x] ✅ **Tempo de Execução:** Suíte completa executada em ~5 segundos offline.
+- [x] ✅ **Tempo de Execução:** Suíte completa executada em ~4.3 segundos offline.
 - [x] ✅ **Padronização com Ruff:** 0 erros de linting e formatação PEP 8 estrita.
 
 ---
@@ -140,9 +141,21 @@ Este documento consolida o mapeamento exaustivo entre as exigências do edital o
 
 ---
 
-### K. Entregáveis Formais do Processo Seletivo
-- [x] ✅ **Repositório Git Público:** Histórico estruturado com 12 commits cronológicos cobrindo todas as fases de construção.
-- [x] ✅ **`README.md` Completo em Inglês:** Documentação detalhada cobrindo arquitetura, guia de instalação, justificativas técnicas, limitações e uso de assistentes de IA (Google Antigravity).
+### K. Conteinerização Docker & Docker Compose (Nível Sênior)
+- [x] ✅ **Multi-Stage Build (`Dockerfile`):** Separação entre estágio de build de dependências (`builder`) e imagem final enxuta (`runner` em `python:3.12-slim-bookworm`).
+- [x] ✅ **Segurança em Primeiro Lugar:** Aplicação executando estritamente sob o usuário não-root `appuser` (UID 10001, GID 10001).
+- [x] ✅ **Auto-Bootstrapping (`docker-entrypoint.sh`):** Em uma máquina virgem sem banco de dados, o entrypoint detecta e executa automaticamente a pipeline de ingestão (`scripts/ingest.py`) antes de iniciar o Streamlit.
+- [x] ✅ **Orquestração Completa (`docker-compose.yml`):**
+  - Serviço principal `emporio-ai` com variáveis de ambiente, volumes persistentes e limites de CPU/memória.
+  - Serviço opcional `ollama` com profile `local-llm` integrado na mesma rede interna (`emporio_ai_network`).
+- [x] ✅ **Healthcheck Nativo:** Monitoramento automático com `curl --fail http://localhost:8501/_stcore/health`.
+- [x] ✅ **Documentação Dedicada:** Guia passo a passo em [`docs/DOCKER_GUIDE.md`](docs/DOCKER_GUIDE.md) e resumo no `README.md`.
+
+---
+
+### L. Entregáveis Formais do Processo Seletivo
+- [x] ✅ **Repositório Git Público:** Histórico estruturado com commits cronológicos cobrindo todas as fases de construção.
+- [x] ✅ **`README.md` Completo em Inglês:** Documentação detalhada cobrindo arquitetura, guia de instalação rápida via Docker e venv local, justificativas técnicas e limitações.
 - [x] ✅ **`examples/conversation_examples.md`:** 5 transcrições detalhadas de conversas reais cobrindo busca de instrumentos, estoque, arrependimento de compra com CDC, cálculo de parcelamento e recusa de acessórios fora de escopo.
 
 ---
