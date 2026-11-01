@@ -10,9 +10,49 @@ import streamlit as st
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
 
+import importlib
+
+import app.llm.provider
+
+importlib.reload(app.llm.provider)
+
 from app.agent.orchestrator import AgentOrchestrator, AgentTurnResult  # noqa: E402
 from app.core.config import settings  # noqa: E402
 from app.llm.provider import MockLLMProvider, OpenAICompatibleProvider  # noqa: E402
+
+
+def safe_verify_connection(provider) -> tuple[bool, str]:
+    """Safely verify connection, ensuring compatibility across hot reloads."""
+    verify_fn = getattr(provider, "verify_connection", None)
+    if callable(verify_fn):
+        try:
+            return verify_fn()
+        except Exception as e:
+            return False, f"Falha ao validar: {e}"
+
+    client = getattr(provider, "client", None)
+    if client:
+        try:
+            client.chat.completions.create(
+                model=getattr(provider, "model", "meta/llama-3.3-70b-instruct"),
+                messages=[{"role": "user", "content": "ping"}],
+                max_tokens=2,
+                timeout=6.0,
+            )
+            return True, "Conexão ativa e validada com sucesso!"
+        except Exception as ex:
+            err = str(ex)
+            if "11434" in err or "refused" in err.lower() or "connection" in err.lower():
+                return (
+                    False,
+                    f"Servidor inacessível em {getattr(provider, 'base_url', '')}. Verifique se o serviço está ativo.",
+                )
+            if "401" in err or "auth" in err.lower() or "unauthorized" in err.lower():
+                return False, "Chave de API não autorizada ou inválida. Verifique sua chave."
+            return False, f"Falha na conexão: {err[:120]}"
+
+    return True, "Provedor pronto para uso."
+
 
 # Page setup
 st.set_page_config(
@@ -304,7 +344,7 @@ with st.expander(
                             base_url=settings.LLM_BASE_URL,
                             model=nv_model.strip(),
                         )
-                        ok, info = test_provider.verify_connection()
+                        ok, info = safe_verify_connection(test_provider)
                         if ok:
                             st.session_state.orchestrator = AgentOrchestrator(
                                 provider=test_provider
@@ -348,7 +388,7 @@ with st.expander(
                     base_url=ol_url.strip(),
                     model=ol_model.strip(),
                 )
-                ok, info = test_provider.verify_connection()
+                ok, info = safe_verify_connection(test_provider)
                 if ok:
                     st.session_state.orchestrator = AgentOrchestrator(provider=test_provider)
                     st.session_state.provider_type = "ollama"
