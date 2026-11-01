@@ -72,14 +72,14 @@ st.set_page_config(
 # Glassmorphism Design System (Adobe Color Palette: #121212, #D6FF00, #BCBCBC, #FFFFFF)
 # ============================================================================
 
-GLASS_CSS = """
-<style>
+GLASS_CSS = """<style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-/* Global Font & App Reset */
+/* Global Font & App Reset — Adobe Color: #121212, #D6FF00, #BCBCBC, #FFFFFF */
 html, body, [class*="css"] {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     color: #F7F7F7;
+    -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, h5 {
@@ -90,9 +90,9 @@ h1, h2, h3, h4, h5 {
 
 /* Background Ambient Lighting (Dark Onyx #121212 + Cyber Lime #D6FF00 Accents) */
 .stApp {
-    background: radial-gradient(circle at 10% 10%, rgba(214, 255, 0, 0.07) 0%, transparent 40%),
-                radial-gradient(circle at 90% 20%, rgba(188, 188, 188, 0.05) 0%, transparent 45%),
-                radial-gradient(circle at 50% 90%, rgba(214, 255, 0, 0.05) 0%, transparent 50%),
+    background: radial-gradient(circle at 12% 12%, rgba(214, 255, 0, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 88% 18%, rgba(188, 188, 188, 0.06) 0%, transparent 45%),
+                radial-gradient(circle at 50% 90%, rgba(214, 255, 0, 0.06) 0%, transparent 50%),
                 #121212 !important;
     background-attachment: fixed !important;
 }
@@ -111,63 +111,77 @@ h1, h2, h3, h4, h5 {
 
 /* Glassmorphism Containers */
 .glass-header {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(28px);
-    -webkit-backdrop-filter: blur(28px);
-    border: 1px solid rgba(188, 188, 188, 0.16);
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(32px) saturate(190%);
+    -webkit-backdrop-filter: blur(32px) saturate(190%);
+    border: 1px solid rgba(188, 188, 188, 0.25);
+    border-top: 1px solid rgba(255, 255, 255, 0.45);
     border-radius: 20px;
     padding: 1.25rem 1.8rem;
-    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65);
+    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.25);
     margin-bottom: 1.5rem;
 }
 
-/* Lighter, Premium Frosted Glass Sidebar */
-[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%),
-                rgba(22, 22, 26, 0.78) !important;
-    backdrop-filter: blur(36px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(36px) saturate(180%) !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.15) !important;
-    box-shadow: 6px 0 32px rgba(0, 0, 0, 0.35) !important;
+/* Authentic Lighter Frosted Liquid Glass Sidebar */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 45%, rgba(188, 188, 188, 0.14) 100%),
+                rgba(36, 40, 52, 0.72) !important;
+    backdrop-filter: blur(45px) saturate(210%) !important;
+    -webkit-backdrop-filter: blur(45px) saturate(210%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.28) !important;
+    box-shadow: inset 1px 0 0 0 rgba(255, 255, 255, 0.25), 10px 0 35px rgba(0, 0, 0, 0.35) !important;
 }
 
-/* Sidebar Glass Content Cards */
+section[data-testid="stSidebar"] > div:first-child,
+[data-testid="stSidebarContent"],
+[data-testid="stSidebarUserContent"],
+[data-testid="stSidebarHeader"] {
+    background: transparent !important;
+}
+
+/* Sidebar Frosted Glass Cards with Specular Highlight and Silver Contours */
 .glass-sidebar-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.13);
-    border-radius: 16px;
-    padding: 1.15rem 1.25rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.11) !important;
+    backdrop-filter: blur(28px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.24) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.55) !important;
+    border-radius: 16px !important;
+    padding: 1.15rem 1.25rem !important;
+    margin-bottom: 1.1rem !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .glass-sidebar-card:hover {
-    border-color: rgba(214, 255, 0, 0.35);
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35), 0 0 16px rgba(214, 255, 0, 0.08);
+    background: rgba(255, 255, 255, 0.16) !important;
+    border-color: #D6FF00 !important;
+    border-top-color: #FFFFFF !important;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35), 0 0 20px rgba(214, 255, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+    transform: translateY(-2px);
 }
 
 .sidebar-brand-title {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
     margin: 0 0 0.8rem 0;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 0.5rem;
 }
 
 .sidebar-item {
     font-size: 0.86rem;
-    color: #E2E2E6;
-    margin-bottom: 0.55rem;
-    line-height: 1.45;
+    color: #F7F7F7 !important;
+    margin-bottom: 0.6rem;
+    line-height: 1.5;
 }
 
 .sidebar-item strong {
-    color: #FFFFFF;
+    color: #FFFFFF !important;
 }
 
 .sidebar-item:last-child {
@@ -176,8 +190,9 @@ h1, h2, h3, h4, h5 {
 
 /* Sidebar Metrics & Expanders */
 [data-testid="stSidebar"] [data-testid="stMetric"] {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    background: rgba(255, 255, 255, 0.10) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.45) !important;
     border-radius: 12px !important;
     padding: 0.65rem 0.85rem !important;
 }
@@ -193,69 +208,113 @@ h1, h2, h3, h4, h5 {
 }
 
 [data-testid="stSidebar"] [data-testid="stExpander"] {
-    background: rgba(255, 255, 255, 0.04) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
     border-radius: 12px !important;
 }
 
 [data-testid="stSidebar"] .stButton > button {
     width: 100% !important;
+    background: rgba(255, 255, 255, 0.09) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.45) !important;
+    color: #FFFFFF !important;
     border-radius: 12px !important;
+    padding: 0.65rem 1rem !important;
+    font-weight: 600 !important;
+    transition: all 0.25s ease !important;
+}
+
+[data-testid="stSidebar"] .stButton > button:hover {
+    background: #D6FF00 !important;
+    border-color: #D6FF00 !important;
+    color: #121212 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 22px rgba(214, 255, 0, 0.6) !important;
 }
 
 /* Glass Chat Bubbles */
 [data-testid="stChatMessage"] {
-    background: rgba(255, 255, 255, 0.028) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(188, 188, 188, 0.11) !important;
+    background: rgba(255, 255, 255, 0.035) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border: 1px solid rgba(188, 188, 188, 0.2) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
     border-radius: 16px !important;
     margin-bottom: 1rem !important;
     padding: 1.1rem 1.5rem !important;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4) !important;
     line-height: 1.6 !important;
 }
 
 /* Custom User Bubble (Neon Lime #D6FF00 Accent Border) */
 [data-testid="stChatMessage"]:nth-child(even) {
-    border-left: 3px solid #D6FF00 !important;
-    background: rgba(214, 255, 0, 0.03) !important;
+    border-left: 4px solid #D6FF00 !important;
+    background: linear-gradient(135deg, rgba(214, 255, 0, 0.07) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 16px rgba(214, 255, 0, 0.1) !important;
 }
 
 /* Custom Assistant Bubble (Chrome #BCBCBC Accent Border) */
 [data-testid="stChatMessage"]:nth-child(odd) {
-    border-left: 3px solid #BCBCBC !important;
+    border-left: 4px solid #BCBCBC !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(188, 188, 188, 0.02) 100%) !important;
 }
 
-/* Suggestion Buttons Styling */
+/* Suggestion Buttons Styling (Resilient, Non-clipping, Frosted Glass) */
 div[data-testid="column"] .stButton > button {
     width: 100% !important;
-    background: rgba(255, 255, 255, 0.03) !important;
-    backdrop-filter: blur(12px) !important;
-    color: #F1F1F1 !important;
-    border: 1px solid rgba(188, 188, 188, 0.15) !important;
+    min-height: 52px !important;
+    height: auto !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(18px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(188, 188, 188, 0.3) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.45) !important;
     border-radius: 12px !important;
-    padding: 0.65rem 0.9rem !important;
+    padding: 0.65rem 0.5rem !important;
     font-size: 0.88rem !important;
-    font-weight: 500 !important;
-    transition: all 0.2s ease !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+    font-weight: 600 !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    line-height: 1.3 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 div[data-testid="column"] .stButton > button:hover {
-    background: rgba(214, 255, 0, 0.08) !important;
+    background: rgba(214, 255, 0, 0.14) !important;
     color: #FFFFFF !important;
-    border-color: rgba(214, 255, 0, 0.45) !important;
-    box-shadow: 0 0 16px rgba(214, 255, 0, 0.2) !important;
+    border-color: #D6FF00 !important;
+    border-top-color: #FFFFFF !important;
+    box-shadow: 0 0 20px rgba(214, 255, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
     transform: translateY(-2px);
 }
 
-/* General Buttons with Neon Cyber Lime Glow */
-.stButton > button {
-    background: rgba(255, 255, 255, 0.04) !important;
-    backdrop-filter: blur(12px) !important;
+div[data-testid="column"] .stButton > button p,
+div[data-testid="column"] .stButton > button div {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    font-size: 0.86rem !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
     color: #FFFFFF !important;
-    border: 1px solid rgba(188, 188, 188, 0.25) !important;
+}
+
+/* General Action Buttons with Neon Cyber Lime Glow */
+.stButton > button {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(14px) !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(188, 188, 188, 0.3) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
     border-radius: 12px !important;
     padding: 0.6rem 1.2rem !important;
     font-weight: 600 !important;
@@ -266,16 +325,17 @@ div[data-testid="column"] .stButton > button:hover {
     background: #D6FF00 !important;
     color: #121212 !important;
     border-color: #D6FF00 !important;
-    box-shadow: 0 0 20px rgba(214, 255, 0, 0.6) !important;
+    box-shadow: 0 0 22px rgba(214, 255, 0, 0.65) !important;
     transform: translateY(-2px);
 }
 
 /* Chat Input Styling */
 [data-testid="stChatInput"] {
-    background: rgba(18, 18, 18, 0.88) !important;
+    background: rgba(20, 22, 28, 0.88) !important;
     backdrop-filter: blur(28px) !important;
     -webkit-backdrop-filter: blur(28px) !important;
-    border: 1px solid rgba(188, 188, 188, 0.18) !important;
+    border: 1px solid rgba(188, 188, 188, 0.28) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.35) !important;
     border-radius: 20px !important;
     box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.8) !important;
     transition: all 0.25s ease !important;
@@ -283,20 +343,20 @@ div[data-testid="column"] .stButton > button:hover {
 
 [data-testid="stChatInput"]:focus-within {
     border-color: #D6FF00 !important;
-    box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.9), 0 0 20px rgba(214, 255, 0, 0.25) !important;
+    box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.9), 0 0 22px rgba(214, 255, 0, 0.35) !important;
 }
 
 /* Inputs styling */
 .stTextInput > div > div > input {
-    background: rgba(255, 255, 255, 0.04) !important;
-    border: 1px solid rgba(188, 188, 188, 0.2) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(188, 188, 188, 0.25) !important;
     border-radius: 10px !important;
     color: #FFFFFF !important;
 }
 
 .stTextInput > div > div > input:focus {
     border-color: #D6FF00 !important;
-    box-shadow: 0 0 16px rgba(214, 255, 0, 0.3) !important;
+    box-shadow: 0 0 16px rgba(214, 255, 0, 0.35) !important;
 }
 
 /* Badges */
@@ -311,7 +371,7 @@ div[data-testid="column"] .stButton > button:hover {
     background: rgba(214, 255, 0, 0.12);
     border: 1px solid #D6FF00;
     color: #D6FF00;
-    box-shadow: 0 0 14px rgba(214, 255, 0, 0.25);
+    box-shadow: 0 0 16px rgba(214, 255, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .badge-silver {
@@ -323,7 +383,7 @@ div[data-testid="column"] .stButton > button:hover {
     font-size: 0.85rem;
     font-weight: 600;
     background: rgba(188, 188, 188, 0.1);
-    border: 1px solid rgba(188, 188, 188, 0.4);
+    border: 1px solid rgba(188, 188, 188, 0.35);
     color: #BCBCBC;
 }
 
@@ -569,23 +629,28 @@ with st.sidebar:
     st.markdown(
         """<div class="glass-sidebar-card" style="text-align: center; padding: 0.5rem; margin-bottom: 0.85rem;">
 <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&auto=format&fit=crop&q=80"
-style="width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); display: block;" />
+style="width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.25); display: block;" />
 </div>""",
         unsafe_allow_html=True,
     )
 
     st.markdown(
         """<div class="glass-sidebar-card">
-<div class="sidebar-brand-title">🏛️ Empório da Música</div>
-<div class="sidebar-item">📍 <strong>Endereço:</strong><br/>Rua 14 de Maio, 3200 — Centro, Campo Grande - MS</div>
-<div class="sidebar-item">⏰ <strong>Horário:</strong><br/>Seg a Sex: 09h às 18h | Sáb: 09h às 13h</div>
-<div class="sidebar-item">📱 <strong>WhatsApp:</strong> (67) 3341-4444</div>
-<div class="sidebar-item">✉️ <strong>E-mail:</strong> contato@emporiodamusica.com.br</div>
+<div class="sidebar-brand-title"><span style="color:#D6FF00;">🏛️</span> Empório da Música</div>
+<div class="sidebar-item">📍 <strong>Endereço:</strong><br/><span style="color:#BCBCBC;">Rua 14 de Maio, 3200 — Centro, Campo Grande - MS</span></div>
+<div class="sidebar-item">⏰ <strong>Horário:</strong><br/><span style="color:#BCBCBC;">Seg a Sex: 09h às 18h | Sáb: 09h às 13h</span></div>
+<div class="sidebar-item">📱 <strong>WhatsApp:</strong> <span style="color:#D6FF00; font-weight:700;">(67) 3341-4444</span></div>
+<div class="sidebar-item">✉️ <strong>E-mail:</strong> <span style="color:#BCBCBC;">contato@emporiodamusica.com.br</span></div>
 </div>""",
         unsafe_allow_html=True,
     )
 
-    st.markdown('<div class="sidebar-brand-title" style="margin-top: 1rem;">🔍 Diagnóstico Técnico</div>', unsafe_allow_html=True)
+    st.markdown(
+        """<div class="glass-sidebar-card" style="margin-bottom: 0.85rem;">
+<div class="sidebar-brand-title"><span style="color:#D6FF00;">🔍</span> Diagnóstico Técnico</div>
+""",
+        unsafe_allow_html=True,
+    )
     diag: AgentTurnResult | None = st.session_state.last_diagnostics
     if diag:
         col_m1, col_m2 = st.columns(2)
@@ -602,9 +667,10 @@ style="width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15
                 st.code(t.output_snippet, language="text")
     else:
         st.caption("Nenhuma ferramenta acionada ainda nesta sessão.")
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("---")
-    if st.button("🗑️ Reiniciar Conversa", key="btn_reset_chat"):
+    st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
+    if st.button("🗑️ Reiniciar Conversa", key="btn_reset_chat", use_container_width=True):
         st.session_state.orchestrator.reset()
         st.session_state.messages = []
         st.session_state.last_diagnostics = None
@@ -621,16 +687,16 @@ st.markdown("##### 💡 Sugestões Rápidas de Consulta:")
 c1, c2, c3, c4 = st.columns(4)
 prompt_to_send = None
 
-if c1.button("🎸 Violões até R$ 1.000", key="sugg_1"):
+if c1.button("🎸 Violões até R$ 1.000", key="sugg_1", use_container_width=True):
     prompt_to_send = "Quais opções de violões disponíveis custando até R$ 1.000?"
 
-if c2.button("📍 Endereço e Horário", key="sugg_2"):
+if c2.button("📍 Endereço e Horário", key="sugg_2", use_container_width=True):
     prompt_to_send = "Qual o endereço da loja e horário de funcionamento?"
 
-if c3.button("📦 Status do Pedido #8", key="sugg_3"):
+if c3.button("📦 Status do Pedido", key="sugg_3", use_container_width=True):
     prompt_to_send = "Gostaria de saber o status do meu pedido número 8."
 
-if c4.button("🔄 Devolução em 15 dias?", key="sugg_4"):
+if c4.button("🔄 Trocas e Devoluções", key="sugg_4", use_container_width=True):
     prompt_to_send = (
         "Me arrependi da compra do meu violão há 15 dias pela internet, posso devolver?"
     )

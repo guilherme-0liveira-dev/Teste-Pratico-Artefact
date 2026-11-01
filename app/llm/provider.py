@@ -176,11 +176,14 @@ class MockLLMProvider(BaseLLMProvider):
         # Check if the previous message was a tool result: synthesize answer
         if messages and messages[-1].get("role") == "tool":
             last_tool_msg = messages[-1].get("content", "")
-            # Find the tool that was called
             tool_name = ""
             for m in reversed(messages[:-1]):
                 if m.get("tool_calls"):
-                    tool_name = m["tool_calls"][0].name
+                    first_call = m["tool_calls"][0]
+                    if hasattr(first_call, "name"):
+                        tool_name = first_call.name
+                    elif isinstance(first_call, dict):
+                        tool_name = first_call.get("name", "")
                     break
 
             if tool_name == "search_products":
@@ -269,6 +272,48 @@ class MockLLMProvider(BaseLLMProvider):
             if m.get("role") == "user":
                 last_user_msg = str(m.get("content", "")).lower()
                 break
+
+        out_of_scope_keywords = [
+            "palheta",
+            "corda",
+            "encordoamento",
+            "cabo",
+            "pedal",
+            "amplificador",
+            "amp",
+            "case",
+            "capa",
+            "suporte",
+            "afinador",
+            "aula",
+            "curso",
+            "luthier",
+            "conserto",
+            "reforma",
+            "aluguel",
+            "locação",
+            "locacao",
+        ]
+        if any(kw in last_user_msg for kw in out_of_scope_keywords):
+            return LLMResponse(
+                content=(
+                    "No momento, a **Empório da Música** não comercializa acessórios avulsos (como palhetas, encordoamentos, cabos ou amplificadores) nem presta serviços externos de aulas ou luthieria particular.\n\n"
+                    "**Por que não podemos atender esta solicitação?**\n"
+                    "Nossa loja é focada exclusivamente na venda de instrumentos musicais novos em catálogo (violões, guitarras, baixos, baterias, teclados/pianos, sopros e percussão).\n\n"
+                    "**O que você PODE consultar e aproveitar em nosso atendimento:**\n"
+                    "- 🎸 **Catálogo Completo de Instrumentos:** Consultar opções de violões (nylon e aço), guitarras, contrabaixos, baterias, teclados e sopros por faixa de preço e marca.\n"
+                    "- 📦 **Estoque e Preços em Tempo Real:** Verificar disponibilidade imediata para pronta entrega nas lojas física e online.\n"
+                    "- 💳 **Condições de Pagamento:** Simular até **12x sem juros** no cartão ou **5% de desconto à vista no PIX**.\n"
+                    "- 🚚 **Status de Pedidos:** Acompanhar o envio e entrega de suas compras informando o número do pedido.\n"
+                    "- 🛡️ **Políticas da Loja:** Dúvidas sobre garantia de fábrica, 30 dias de troca por defeito e 7 dias de arrependimento (compras online - CDC Art. 49).\n"
+                    "- 📍 **Visita à Loja Física:** Conhecer nosso showroom na Rua 14 de Maio, 3200 — Centro, Campo Grande - MS (Seg a Sex: 09h às 18h | Sáb: 09h às 13h).\n\n"
+                    "💡 **Sugestões Rápidas de Consulta:**\n"
+                    "- Gostaria de conferir opções de **violões até R$ 1.000**?\n"
+                    "- Deseja simular o valor de uma guitarra no PIX com 5% de desconto?\n\n"
+                    "Para indicações de parceiros da região ou dúvidas adicionais, nossa equipe humana está à disposição no WhatsApp: **(67) 3341-4444**."
+                ),
+                tool_calls=[],
+            )
 
         if "viol" in last_user_msg or "violão" in last_user_msg:
             return LLMResponse(
