@@ -96,3 +96,35 @@ def test_orchestrator_reset():
     orchestrator.reset()
     assert len(orchestrator.messages) == 1
     assert orchestrator.messages[0]["role"] == "system"
+
+
+def test_sanitize_response_text_currency_and_ids():
+    """Verify that sanitize_response_text strictly fixes currency formatting and strips internal IDs."""
+    from app.agent.orchestrator import sanitize_response_text
+
+    raw_input = (
+        "Tagima Memphis AC-39 (ID 81): R 429,90 (À vista PIX: R 408,40). "
+        "Intermediários (R 500,00 a R 750,00). "
+        "Giannini [ID: 82] por R$549,00 ou R$   600,00."
+    )
+    sanitized = sanitize_response_text(raw_input)
+
+    # Must convert 'R 429,90' to 'R$ 429,90'
+    assert "R$ 429,90" in sanitized
+    assert "R 429,90" not in sanitized
+
+    # Must convert 'R 408,40' to 'R$ 408,40'
+    assert "R$ 408,40" in sanitized
+
+    # Must convert 'R 500,00' and 'R 750,00'
+    assert "R$ 500,00" in sanitized
+    assert "R$ 750,00" in sanitized
+
+    # Must standardize 'R$549,00' and 'R$   600,00'
+    assert "R$ 549,00" in sanitized
+    assert "R$ 600,00" in sanitized
+
+    # Must strip internal IDs
+    assert "(ID 81)" not in sanitized
+    assert "[ID: 82]" not in sanitized
+    assert "Tagima Memphis AC-39:" in sanitized

@@ -1,5 +1,4 @@
-"""Agent orchestrator managing multi-turn conversation and bounded tool execution."""
-
+import re
 import time
 from dataclasses import dataclass, field
 from typing import Any
@@ -132,9 +131,10 @@ class AgentOrchestrator:
                 continue
 
             # If no tool calls, this is the final response
-            final_answer = (
+            raw_answer = (
                 llm_response.content or "Como posso ajudar você com nossos instrumentos musicais?"
             )
+            final_answer = sanitize_response_text(raw_answer)
             self.messages.append({"role": "assistant", "content": final_answer})
             break
 
@@ -144,6 +144,8 @@ class AgentOrchestrator:
                 "Para detalhes adicionais, nossa equipe humana no WhatsApp (67) 3341-4444 está pronta para ajudar!"
             )
             self.messages.append({"role": "assistant", "content": final_answer})
+        else:
+            final_answer = sanitize_response_text(final_answer)
 
         total_latency = time.time() - start_time
         return AgentTurnResult(
@@ -152,6 +154,31 @@ class AgentOrchestrator:
             turn_latency_s=round(total_latency, 2),
             iteration_count=iterations,
         )
+
+
+def sanitize_response_text(text: str) -> str:
+    """Post-processing guardrail enforcing strict Brazilian currency formatting and preventing leaks.
+
+    - Replaces 'R 429,90' or 'R 500,00' with 'R$ 429,90' or 'R$ 500,00'.
+    - Standardizes 'R$429,90' and 'R$   429,90' to 'R$ 429,90'.
+    - Strips internal database IDs like '(ID 81)', '(ID: 82)', or '[ID 10]'.
+    """
+    if not text:
+        return text
+
+    # 1. Fix missing $ in currency: 'R 429,90' or 'R 500' -> 'R$ 429,90'
+    text = re.sub(r"\bR\s+(?=\d)", "R$ ", text)
+
+    # 2. Fix missing space after R$: 'R$429,90' -> 'R$ 429,90'
+    text = re.sub(r"\bR\$(?=\d)", "R$ ", text)
+
+    # 3. Fix multiple spaces after R$: 'R$   429,90' -> 'R$ 429,90'
+    text = re.sub(r"\bR\$\s{2,}(?=\d)", "R$ ", text)
+
+    # 4. Remove internal database product IDs if any leaked (e.g. '(ID 81)', '(ID: 82)', '[ID 10]')
+    text = re.sub(r"\s*[\(\[]\s*ID:?\s*\d+\s*[\)\]]", "", text, flags=re.IGNORECASE)
+
+    return text
 
 
 def json_dumps(obj: Any) -> str:

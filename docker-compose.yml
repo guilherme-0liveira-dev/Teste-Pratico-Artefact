@@ -26,6 +26,8 @@ services:
     volumes:
       # Persistent storage for SQLite database and indexed catalogs
       - emporio_data:/app/data
+      # Live development mount for instant code synchronization
+      - ./app:/app/app:ro
     networks:
       - emporio-network
     healthcheck:

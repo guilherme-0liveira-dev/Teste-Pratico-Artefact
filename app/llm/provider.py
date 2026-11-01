@@ -183,7 +183,10 @@ class MockLLMProvider(BaseLLMProvider):
                     if hasattr(first_call, "name"):
                         tool_name = first_call.name
                     elif isinstance(first_call, dict):
-                        tool_name = first_call.get("name", "")
+                        if "function" in first_call and isinstance(first_call["function"], dict):
+                            tool_name = first_call["function"].get("name", "")
+                        else:
+                            tool_name = first_call.get("name", "")
                     break
 
             if tool_name == "search_products":

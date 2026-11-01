@@ -1,6 +1,7 @@
 """Streamlit web application for Empório AI with Adobe Color Palette & Glassmorphism."""
 
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -60,6 +61,15 @@ def safe_verify_connection(provider) -> tuple[bool, str]:
     return True, "Provedor pronto para uso."
 
 
+def render_safe_markdown(text: str) -> None:
+    """Safely render markdown escaping currency symbols so KaTeX math mode is never triggered."""
+    if not text:
+        return
+    # Escape standalone dollar signs in currency (R$) to prevent Streamlit KaTeX from treating them as LaTeX inline math
+    safe_text = re.sub(r"(?<!\\)R\$\s*", r"R\\$ ", text)
+    st.markdown(safe_text)
+
+
 # Page setup
 st.set_page_config(
     page_title="Empório AI — Empório da Música",
@@ -88,18 +98,114 @@ h1, h2, h3, h4, h5 {
     color: #FFFFFF !important;
 }
 
-/* Background Ambient Lighting (Dark Onyx #121212 + Cyber Lime #D6FF00 Accents) */
+/* Background Ambient Gradient — Adobe Colors: #121212 Onyx, #D6FF00 Cyber Lime, #BCBCBC Silver, #FFFFFF Pure Specular */
 .stApp {
-    background: radial-gradient(circle at 12% 12%, rgba(214, 255, 0, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 88% 18%, rgba(188, 188, 188, 0.06) 0%, transparent 45%),
-                radial-gradient(circle at 50% 90%, rgba(214, 255, 0, 0.06) 0%, transparent 50%),
-                #121212 !important;
+    background:
+        radial-gradient(ellipse 90% 60% at 5% 12%, rgba(214, 255, 0, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 50% at 95% 18%, rgba(188, 188, 188, 0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 85% 65% at 50% 90%, rgba(214, 255, 0, 0.12) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 20% 60%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+        linear-gradient(150deg, #0b0c0e 0%, #121212 30%, #191c14 65%, #0e110c 100%) !important;
     background-attachment: fixed !important;
 }
 
-/* Hide Streamlit default deploy/menu/footer */
-.stDeployButton, [data-testid="stToolbar"], footer, #MainMenu {
+/* Hide Streamlit default Deploy button, hamburger menu and footer (NEVER hide stToolbar or expand buttons) */
+.stDeployButton,
+[data-testid="stDeployButton"],
+[data-testid="stAppDeployButton"],
+[data-testid="stHeaderActionElements"],
+footer,
+#MainMenu,
+[data-testid="stMainMenu"] {
     display: none !important;
+}
+
+/* Ensure Header and Toolbar are transparent, non-blocking, and keep the Expand button visible */
+header[data-testid="stHeader"] {
+    background: transparent !important;
+    height: 3.5rem !important;
+    z-index: 999990 !important;
+}
+
+[data-testid="stToolbar"] {
+    background: transparent !important;
+    visibility: visible !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Sidebar Collapse Button (Inside the Sidebar when expanded) */
+[data-testid="stSidebarCollapseButton"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1000000 !important;
+    margin-right: 0.5rem !important;
+}
+
+[data-testid="stSidebarCollapseButton"] button {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(188, 188, 188, 0.35) !important;
+    border-radius: 10px !important;
+    color: #FFFFFF !important;
+    padding: 0.35rem 0.5rem !important;
+    cursor: pointer !important;
+    transition: all 0.25s ease !important;
+}
+
+[data-testid="stSidebarCollapseButton"] button:hover {
+    background: rgba(214, 255, 0, 0.18) !important;
+    border-color: #D6FF00 !important;
+    box-shadow: 0 0 16px rgba(214, 255, 0, 0.4) !important;
+    color: #FFFFFF !important;
+}
+
+[data-testid="stSidebarCollapseButton"] svg {
+    fill: #FFFFFF !important;
+    stroke: #FFFFFF !important;
+    color: #FFFFFF !important;
+}
+
+/* Sidebar Expand Button (Shown in Header/Toolbar when sidebar is minimized) */
+[data-testid="stExpandSidebarButton"],
+[data-testid="collapsedControl"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1000000 !important;
+    background: rgba(20, 22, 28, 0.88) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(188, 188, 188, 0.35) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.5) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+    padding: 0.25rem !important;
+    margin-left: 0.75rem !important;
+    transition: all 0.25s ease !important;
+}
+
+[data-testid="stExpandSidebarButton"] button,
+[data-testid="collapsedControl"] button {
+    background: transparent !important;
+    border: none !important;
+    color: #FFFFFF !important;
+    cursor: pointer !important;
+}
+
+[data-testid="stExpandSidebarButton"]:hover,
+[data-testid="collapsedControl"]:hover {
+    background: rgba(30, 35, 45, 0.95) !important;
+    border-color: #D6FF00 !important;
+    box-shadow: 0 0 20px rgba(214, 255, 0, 0.5) !important;
+    transform: scale(1.05);
+}
+
+[data-testid="stExpandSidebarButton"] svg,
+[data-testid="collapsedControl"] svg {
+    fill: #D6FF00 !important;
+    stroke: #D6FF00 !important;
+    color: #D6FF00 !important;
 }
 
 /* Main container layout */
@@ -122,14 +228,14 @@ h1, h2, h3, h4, h5 {
     margin-bottom: 1.5rem;
 }
 
-/* Authentic Lighter Frosted Liquid Glass Sidebar */
+/* Sidebar Glassy V5 — Transparent Liquid Glass with Full Emphasis on Site Background Gradient */
 section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 45%, rgba(188, 188, 188, 0.14) 100%),
-                rgba(36, 40, 52, 0.72) !important;
-    backdrop-filter: blur(45px) saturate(210%) !important;
-    -webkit-backdrop-filter: blur(45px) saturate(210%) !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.28) !important;
-    box-shadow: inset 1px 0 0 0 rgba(255, 255, 255, 0.25), 10px 0 35px rgba(0, 0, 0, 0.35) !important;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 45%, rgba(214, 255, 0, 0.04) 100%),
+                rgba(18, 18, 18, 0.28) !important;
+    backdrop-filter: blur(36px) saturate(210%) !important;
+    -webkit-backdrop-filter: blur(36px) saturate(210%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: inset 1px 0 0 0 rgba(255, 255, 255, 0.2), 12px 0 40px rgba(0, 0, 0, 0.45) !important;
 }
 
 section[data-testid="stSidebar"] > div:first-child,
@@ -139,25 +245,25 @@ section[data-testid="stSidebar"] > div:first-child,
     background: transparent !important;
 }
 
-/* Sidebar Frosted Glass Cards with Specular Highlight and Silver Contours */
+/* Sidebar Glass Cards V5 */
 .glass-sidebar-card {
-    background: rgba(255, 255, 255, 0.11) !important;
-    backdrop-filter: blur(28px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.24) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.55) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(24px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
+    border: 1px solid rgba(188, 188, 188, 0.22) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.45) !important;
     border-radius: 16px !important;
     padding: 1.15rem 1.25rem !important;
     margin-bottom: 1.1rem !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .glass-sidebar-card:hover {
-    background: rgba(255, 255, 255, 0.16) !important;
+    background: rgba(255, 255, 255, 0.10) !important;
     border-color: #D6FF00 !important;
     border-top-color: #FFFFFF !important;
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35), 0 0 20px rgba(214, 255, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45), 0 0 20px rgba(214, 255, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
     transform: translateY(-2px);
 }
 
@@ -670,12 +776,23 @@ style="width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.25
     st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
-    if st.button("🗑️ Reiniciar Conversa", key="btn_reset_chat", use_container_width=True):
-        st.session_state.orchestrator.reset()
-        st.session_state.messages = []
-        st.session_state.last_diagnostics = None
-        st.session_state.toast_message = ("Histórico de conversa reiniciado!", "🗑️")
-        st.rerun()
+    col_act1, col_act2 = st.columns(2)
+    with col_act1:
+        if st.button("🗑️ Reiniciar", key="btn_reset_chat", use_container_width=True):
+            st.session_state.orchestrator.reset()
+            st.session_state.messages = []
+            st.session_state.last_diagnostics = None
+            st.session_state.toast_message = ("Histórico de conversa reiniciado!", "🗑️")
+            st.rerun()
+    with col_act2:
+        if st.button("🧹 Limpar Cache", key="btn_clear_cache", use_container_width=True):
+            st.cache_data.clear()
+            st.cache_resource.clear()
+            st.session_state.orchestrator.reset()
+            st.session_state.messages = []
+            st.session_state.last_diagnostics = None
+            st.session_state.toast_message = ("Cache da aplicação limpo com sucesso!", "✨")
+            st.rerun()
 
 
 # ============================================================================
@@ -704,7 +821,7 @@ if c4.button("🔄 Trocas e Devoluções", key="sugg_4", use_container_width=Tru
 # Display Conversation History
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
+        render_safe_markdown(msg["content"])
 
 # Chat Input Field
 user_input = (
@@ -716,13 +833,13 @@ if user_input:
     # 1. Append and render user message
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user"):
-        st.markdown(user_input)
+        render_safe_markdown(user_input)
 
     # 2. Process turn via Agent Orchestrator
     with st.chat_message("assistant"):
         with st.spinner("Consultando dados e políticas da Empório da Música..."):
             turn_result: AgentTurnResult = st.session_state.orchestrator.handle_message(user_input)
-            st.markdown(turn_result.response_text)
+            render_safe_markdown(turn_result.response_text)
 
         st.session_state.messages.append(
             {"role": "assistant", "content": turn_result.response_text}
