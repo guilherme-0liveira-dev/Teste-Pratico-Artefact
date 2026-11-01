@@ -121,7 +121,7 @@ The entire application, database, and optional local LLM are fully containerized
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-username/emporio-ai.git
+git clone https://github.com/guilherme-0liveira-dev/emporio-ai.git
 cd emporio-ai
 
 # 2. (Optional) Configure NVIDIA NIM or Ollama in .env (or run offline demonstration mode)

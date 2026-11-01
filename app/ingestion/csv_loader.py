@@ -1,6 +1,6 @@
-"""Idempotent CSV Ingestion Pipeline with schema validation and Decimal normalization."""
+from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
@@ -34,7 +34,7 @@ def parse_decimal(value: Any) -> Decimal:
         return Decimal("0.00")
 
 
-def parse_date(value: Any) -> datetime.date | None:
+def parse_date(value: Any) -> date | None:
     """Parse dates formatted as YYYY-MM-DD or DD/MM/YYYY into date objects."""
     if pd.isna(value) or not value or str(value).strip() == "":
         return None
