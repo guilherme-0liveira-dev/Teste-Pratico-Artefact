@@ -10,10 +10,11 @@
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
 > **Idiomas / Languages:**  
-> 🇧🇷 **[Versão em Português (pt-BR)](#-versão-em-português-pt-br)** | 🇬🇧 **[English Version (EN)](#-english-version-en)**
+> 🇧🇷 **[Versão em Português (pt-BR)](#versao-pt-br)** | 🇬🇧 **[English Version (EN)](#english-version-en)**
 
 ---
 
+<a id="versao-pt-br"></a>
 # 🇧🇷 Versão em Português (pt-BR)
 
 Agente de atendimento conversacional com inteligência artificial, nível sênior, reprodutível e conteinerizado, desenvolvido para a **Empório da Música**, tradicional loja varejista de instrumentos musicais situada em Campo Grande / MS.
@@ -41,36 +42,36 @@ A Empório da Música atua no mercado de instrumentos há mais de 15 anos. Sua e
 
 ```mermaid
 graph TD
-    User([Cliente / Usuário]) <--> Streamlit[Camada de Apresentação: Streamlit UI Glassy V5]
+    User(["Cliente / Usuário"]) <--> Streamlit["Camada de Apresentação: Streamlit UI Glassy V5"]
     
     subgraph ApplicationLayer ["Camada de Aplicação"]
-        Streamlit <--> Orchestrator[Orquestrador do Agente (ReAct Loop)]
-        Orchestrator <--> Prompts[System Prompt & Diretrizes da Marca]
-        Orchestrator <--> LLM[Interface BaseLLMProvider]
-        Orchestrator <--> ToolDispatcher[Registro de Ferramentas & Schemas Pydantic v2]
+        Streamlit <--> Orchestrator["Orquestrador do Agente (ReAct Loop)"]
+        Orchestrator <--> Prompts["System Prompt & Diretrizes da Marca"]
+        Orchestrator <--> LLM["Interface BaseLLMProvider"]
+        Orchestrator <--> ToolDispatcher["Registro de Ferramentas & Schemas Pydantic v2"]
     end
 
     subgraph LLMProviders ["Provedores de LLM Resilientes"]
-        LLM -.-> Nvidia[NVIDIA NIM Cloud Free<br/>nvidia/nemotron-3.5-bolt-e4b (Oficial)<br/>Fallback: llama-3.1-nemotron-70b]
-        LLM -.-> Ollama[Ollama Local Privado<br/>qwen2.5-coder:7b / llama3.2]
-        LLM -.-> Mock[MockLLMProvider<br/>Fallback Determinístico Offline]
+        LLM -.-> Nvidia["NVIDIA NIM Cloud Free<br/>nvidia/nemotron-3.5-bolt-e4b (Oficial)<br/>Fallback: llama-3.1-nemotron-70b"]
+        LLM -.-> Ollama["Ollama Local Privado<br/>qwen2.5-coder:7b / llama3.2"]
+        LLM -.-> Mock["MockLLMProvider<br/>Fallback Determinístico Offline"]
     end
 
     subgraph DomainLayer ["Camada de Domínio (Python Puro Determinístico)"]
-        ToolDispatcher --> CatalogService[Serviço de Catálogo]
-        ToolDispatcher --> OrderService[Serviço de Rastreio de Pedidos]
-        ToolDispatcher --> RulesEngine[Motor de Regras de Negócio<br/>PIX 5% | Parcelamento 12x | Trocas CDC | Frete]
-        ToolDispatcher --> PolicySearch[Serviço de Busca de Políticas<br/>BM25 Okapi]
+        ToolDispatcher --> CatalogService["Serviço de Catálogo"]
+        ToolDispatcher --> OrderService["Serviço de Rastreio de Pedidos"]
+        ToolDispatcher --> RulesEngine["Motor de Regras de Negócio<br/>PIX 5% | Parcelamento 12x | Trocas CDC | Frete"]
+        ToolDispatcher --> PolicySearch["Serviço de Busca de Políticas<br/>BM25 Okapi"]
     end
 
     subgraph InfrastructureLayer ["Camada de Infraestrutura & Armazenamento"]
-        CatalogService --> SQLite[(SQLite: emporio.db)]
+        CatalogService --> SQLite[("SQLite: emporio.db")]
         OrderService --> SQLite
         RulesEngine -.-> SQLite
-        PolicySearch --> PolicyChunks[(Chunks Indexados do PDF de Políticas)]
+        PolicySearch --> PolicyChunks[("Chunks Indexados do PDF de Políticas")]
         
-        CSVLoader[Pipeline de Ingestão de CSVs<br/>Pandas + Parser Decimal] --> SQLite
-        PDFLoader[Extrator do Manual em PDF<br/>PyMuPDF + Chunking Semântico] --> SQLite
+        CSVLoader["Pipeline de Ingestão de CSVs<br/>Pandas + Parser Decimal"] --> SQLite
+        PDFLoader["Extrator do Manual em PDF<br/>PyMuPDF + Chunking Semântico"] --> SQLite
         PDFLoader --> PolicyChunks
     end
 ```
@@ -353,6 +354,7 @@ Em total conformidade com as diretrizes do edital da Artefact:
 ---
 ---
 
+<a id="english-version-en"></a>
 # 🇬🇧 English Version (EN)
 
 A production-grade, reproducible, containerized conversational AI customer service assistant engineered for **Empório da Música**, a retail musical instrument store located in Campo Grande / MS, Brazil.
@@ -380,37 +382,37 @@ Empório da Música is a regional retail store with over 15 years in the market,
 
 ```mermaid
 graph TD
-    User([Customer / User]) <--> Streamlit[Presentation Layer: Streamlit Glassy V5 UI]
+    EN_User(["Customer / User"]) <--> EN_Streamlit["Presentation Layer: Streamlit Glassy V5 UI"]
     
-    subgraph ApplicationLayer ["Application Layer"]
-        Streamlit <--> Orchestrator[Agent Orchestrator (ReAct Loop)]
-        Orchestrator <--> Prompts[System Prompt & Strict Brand Guardrails]
-        Orchestrator <--> LLM[BaseLLMProvider Interface]
-        Orchestrator <--> ToolDispatcher[Tool Registry & Pydantic v2 Schemas]
+    subgraph EN_ApplicationLayer ["Application Layer"]
+        EN_Streamlit <--> EN_Orchestrator["Agent Orchestrator (ReAct Loop)"]
+        EN_Orchestrator <--> EN_Prompts["System Prompt & Strict Brand Guardrails"]
+        EN_Orchestrator <--> EN_LLM["BaseLLMProvider Interface"]
+        EN_Orchestrator <--> EN_ToolDispatcher["Tool Registry & Pydantic v2 Schemas"]
     end
 
-    subgraph LLMProviders ["Resilient LLM Providers"]
-        LLM -.-> Nvidia[NVIDIA NIM Cloud Free<br/>nvidia/nemotron-3.5-bolt-e4b (Official)<br/>Fallback: llama-3.1-nemotron-70b]
-        LLM -.-> Ollama[Ollama Local Private<br/>qwen2.5-coder:7b / llama3.2]
-        LLM -.-> Mock[MockLLMProvider<br/>Deterministic Offline Fallback]
+    subgraph EN_LLMProviders ["Resilient LLM Providers"]
+        EN_LLM -.-> EN_Nvidia["NVIDIA NIM Cloud Free<br/>nvidia/nemotron-3.5-bolt-e4b (Official)<br/>Fallback: llama-3.1-nemotron-70b"]
+        EN_LLM -.-> EN_Ollama["Ollama Local Private<br/>qwen2.5-coder:7b / llama3.2"]
+        EN_LLM -.-> EN_Mock["MockLLMProvider<br/>Deterministic Offline Fallback"]
     end
 
-    subgraph DomainLayer ["Domain Layer (Pure Deterministic Python)"]
-        ToolDispatcher --> CatalogService[Catalog Service]
-        ToolDispatcher --> OrderService[Order Tracking Service]
-        ToolDispatcher --> RulesEngine[Business Rules Engine<br/>PIX 5% | Installment Tiers | CDC Returns | Shipping]
-        ToolDispatcher --> PolicySearch[Policy Search Service<br/>BM25 Okapi Retrieval]
+    subgraph EN_DomainLayer ["Domain Layer (Pure Deterministic Python)"]
+        EN_ToolDispatcher --> EN_CatalogService["Catalog Service"]
+        EN_ToolDispatcher --> EN_OrderService["Order Tracking Service"]
+        EN_ToolDispatcher --> EN_RulesEngine["Business Rules Engine<br/>PIX 5% | Installment Tiers | CDC Returns | Shipping"]
+        EN_ToolDispatcher --> EN_PolicySearch["Policy Search Service<br/>BM25 Okapi Retrieval"]
     end
 
-    subgraph InfrastructureLayer ["Infrastructure & Storage Layer"]
-        CatalogService --> SQLite[(SQLite: emporio.db)]
-        OrderService --> SQLite
-        RulesEngine -.-> SQLite
-        PolicySearch --> PolicyChunks[(Indexed PDF Policy Sections)]
+    subgraph EN_InfrastructureLayer ["Infrastructure & Storage Layer"]
+        EN_CatalogService --> EN_SQLite[("SQLite: emporio.db")]
+        EN_OrderService --> EN_SQLite
+        EN_RulesEngine -.-> EN_SQLite
+        EN_PolicySearch --> EN_PolicyChunks[("Indexed PDF Policy Sections")]
         
-        CSVLoader[CSV Ingestion Pipeline<br/>Pandas + Decimal Parsing] --> SQLite
-        PDFLoader[PDF Text Extractor<br/>PyMuPDF + Structure Chunking] --> SQLite
-        PDFLoader --> PolicyChunks
+        EN_CSVLoader["CSV Ingestion Pipeline<br/>Pandas + Decimal Parsing"] --> EN_SQLite
+        EN_PDFLoader["PDF Text Extractor<br/>PyMuPDF + Structure Chunking"] --> EN_SQLite
+        EN_PDFLoader --> EN_PolicyChunks
     end
 ```
 
@@ -446,7 +448,7 @@ A fundamental architectural principle of Empório AI is that **the LLM is never 
 1. **PIX Discount (5%):**
    - Applies a 5% cash discount on regular catalog prices (`price * 0.95`).
    - **Strict Non-Cumulativity:** If a product is already subject to an active promotional campaign, the PIX discount is strictly disallowed or calculated solely from base price (preventing stacked discounts).
-2. **Tiered Credit Card Installments (Sem Juros):**
+2. **Tiered Credit Card Installments (Interest-Free):**
    - **1x to 3x:** Interest-free, no minimum installment amount (except order total < R$ 50.00).
    - **4x to 6x:** Interest-free, strictly requires a minimum monthly installment of **R$ 80.00**.
    - **7x to 12x:** Interest-free, strictly requires a minimum monthly installment of **R$ 100.00**.
@@ -456,7 +458,7 @@ A fundamental architectural principle of Empório AI is that **the LLM is never 
 4. **Defect-Related Exchanges:**
    - Up to **30 calendar days** directly with the physical store. Thereafter, refers customer to manufacturer warranty (90 days legal + factory warranty).
 5. **Shipping & Freight (Campo Grande & Brazil):**
-   - **Grande Campo Grande:** Free shipping for orders ≥ R$ 500.00 (1–3 business days via motoboy); fixed fee of **R$ 35.00** for orders < R$ 500.00.
+   - **Greater Campo Grande Area:** Free shipping for orders ≥ R$ 500.00 (1–3 business days via local courier); fixed fee of **R$ 35.00** for orders < R$ 500.00.
    - **Other cities:** External shipping via Correios (PAC/SEDEX) or Jadlog, calculated by postal code at checkout.
 
 ---
