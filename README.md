@@ -51,7 +51,7 @@ graph TD
     end
 
     subgraph LLMProviders ["Provedores de LLM Resilientes"]
-        LLM -.-> Nvidia[NVIDIA NIM Cloud Free<br/>meta/llama-3.3-70b-instruct / nemotron]
+        LLM -.-> Nvidia[NVIDIA NIM Cloud Free<br/>nvidia/nemotron-3.5-bolt-e4b (Oficial)<br/>Fallback: llama-3.1-nemotron-70b]
         LLM -.-> Ollama[Ollama Local Privado<br/>qwen2.5-coder:7b / llama3.2]
         LLM -.-> Mock[MockLLMProvider<br/>Fallback Determinístico Offline]
     end
@@ -94,7 +94,7 @@ graph TD
 | **Ingestão de Dados** | Pandas + `Decimal` nativo | Normalização de moedas em formato brasileiro (`R$ 1.299,00` → `Decimal('1299.00')`) e tratamento idempotente de datas ISO/BR. |
 | **Extração de PDF** | PyMuPDF (`pymupdf`) | Extração estruturada de alta fidelidade do manual oficial, preservando títulos, seções e números de página. |
 | **Busca de Políticas** | Rank-BM25 (`rank-bm25`) | Recuperação lexical ultrarrápida. Como o manual é curto (8 páginas) e envolve termos jurídicos precisos, o BM25 elimina custo de embeddings e drift vetorial. |
-| **Provedores de LLM** | NVIDIA NIM / Ollama / Mock | Abstração agnóstica (`BaseLLMProvider`). Suporta nuvem gratuita (NVIDIA NIM), execução 100% local e privada (Ollama) e mock determinístico para CI/CD. |
+| **Provedores de LLM** | NVIDIA NIM / Ollama / Mock | Abstração agnóstica (`BaseLLMProvider`). **Modelo Oficial:** `nvidia/nemotron-3.5-bolt-e4b` (alta precisão e raciocínio para function calling). Suporta fallback resiliente automático para `nvidia/llama-3.1-nemotron-70b-instruct` / `meta/llama-3.3-70b-instruct`, execução local via Ollama (`qwen2.5-coder:7b`) e Mock offline para CI/CD. |
 | **Tolerância a Falhas** | Backoff Exponencial + Jitter | Absorve automaticamente instabilidades de cold start (`HTTP 404/503`) de modelos em nuvem sem interromper a conversa do usuário. |
 | **Qualidade de Código** | Ruff + Pytest | Linting ultrarrápido (sub-segundo) e 57 testes automatizados cobrindo 100% das regras críticas de negócio sem chamadas de rede. |
 
@@ -148,8 +148,8 @@ A aplicação completa com banco de dados SQLite e inicialização automática r
 
 ```bash
 # 1. Clonar o repositório
-git clone https://github.com/guilherme-0liveira-dev/emporio-ai.git
-cd emporio-ai
+git clone https://github.com/guilherme-0liveira-dev/Teste-Pratico-Artefact.git
+cd Teste-Pratico-Artefact
 
 # 2. Configurar variáveis no .env (ou usar o modo mock offline padrão)
 cp .env.example .env
@@ -172,8 +172,8 @@ Acesse **`http://localhost:8501`** no seu navegador. O container detecta a ausê
 
 ```powershell
 # 1. Clonar o repositório
-git clone https://github.com/guilherme-0liveira-dev/emporio-ai.git
-cd emporio-ai
+git clone https://github.com/guilherme-0liveira-dev/Teste-Pratico-Artefact.git
+cd Teste-Pratico-Artefact
 
 # 2. Criar e ativar o ambiente virtual
 python -m venv .venv
@@ -219,7 +219,7 @@ cp .env.example .env
 | `LLM_PROVIDER` | `nvidia` | Provedor ativo (`nvidia`, `ollama` ou `mock`). |
 | `LLM_API_KEY` | `""` | Chave de API da NVIDIA NIM (gratuita em [build.nvidia.com](https://build.nvidia.com)). |
 | `LLM_BASE_URL` | `https://integrate.api.nvidia.com/v1` | Endpoint compatível com a API da OpenAI. |
-| `LLM_MODEL` | `meta/llama-3.3-70b-instruct` | Identificador do modelo de linguagem. |
+| `LLM_MODEL` | `nvidia/nemotron-3.5-bolt-e4b` | Modelo oficial utilizado (otimizado para function calling com fallback resiliente para `llama-3.1-nemotron-70b`). |
 | `OLLAMA_BASE_URL` | `http://127.0.0.1:11434/v1` | Endpoint do Ollama local. |
 | `OLLAMA_MODEL` | `qwen2.5-coder:7b` | Modelo local para execução via Ollama. |
 | `DATABASE_URL` | `sqlite:///data/emporio.db` | URI de conexão do banco de dados SQLite. |
@@ -390,7 +390,7 @@ graph TD
     end
 
     subgraph LLMProviders ["Resilient LLM Providers"]
-        LLM -.-> Nvidia[NVIDIA NIM Cloud Free<br/>meta/llama-3.3-70b-instruct / nemotron]
+        LLM -.-> Nvidia[NVIDIA NIM Cloud Free<br/>nvidia/nemotron-3.5-bolt-e4b (Official)<br/>Fallback: llama-3.1-nemotron-70b]
         LLM -.-> Ollama[Ollama Local Private<br/>qwen2.5-coder:7b / llama3.2]
         LLM -.-> Mock[MockLLMProvider<br/>Deterministic Offline Fallback]
     end
@@ -433,7 +433,7 @@ graph TD
 | **Data Ingestion** | Pandas + Python `Decimal` | Clean handling of tabular datasets, normalization of Brazilian currency strings (`R$ 1.299,00` → `Decimal('1299.00')`), and ISO datetime conversion. |
 | **PDF Extraction** | PyMuPDF (`pymupdf`) | High-fidelity PDF parsing preserving layout hierarchy, titles, subsections, and exact page numbers. |
 | **Policy Retrieval** | Rank-BM25 (`rank-bm25`) | Lightweight lexical retrieval. Store policies are concise (8 pages) and legal terms require exact keyword matching. Avoids vector database complexity, external embeddings cost, and vector drift. |
-| **LLM Provider** | NVIDIA NIM / Ollama / Mock | Provider-agnostic abstraction (`BaseLLMProvider`). Supports cloud-free models via NVIDIA NIM, 100% private local execution via Ollama, and offline test mocking. |
+| **LLM Provider** | NVIDIA NIM / Ollama / Mock | Provider-agnostic abstraction (`BaseLLMProvider`). **Official Model:** `nvidia/nemotron-3.5-bolt-e4b` (optimized for high-precision reasoning and function calling). Includes resilient automatic fallback to `nvidia/llama-3.1-nemotron-70b-instruct` / `meta/llama-3.3-70b-instruct`, local Ollama execution (`qwen2.5-coder:7b`), and deterministic offline Mock. |
 | **Resilience & Fault Tolerance** | Exponential Backoff + Jitter | Automatically handles transient cloud cold starts (`HTTP 404/503`) and API rate limits (`429`) with automatic fallback synthesis. |
 | **Code Quality** | Ruff + Pytest | Sub-second linting, PEP 8 formatting, and 57 deterministic automated unit/integration tests with zero external API calls. |
 
@@ -487,8 +487,8 @@ The entire application, database, and optional local LLM are containerized using
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/guilherme-0liveira-dev/emporio-ai.git
-cd emporio-ai
+git clone https://github.com/guilherme-0liveira-dev/Teste-Pratico-Artefact.git
+cd Teste-Pratico-Artefact
 
 # 2. (Optional) Configure NVIDIA NIM or Ollama in .env (or run offline demonstration mode)
 cp .env.example .env
@@ -511,8 +511,8 @@ Open **`http://localhost:8501`** in your browser. The container automatically se
 
 ```powershell
 # 1. Clone the repository
-git clone https://github.com/guilherme-0liveira-dev/emporio-ai.git
-cd emporio-ai
+git clone https://github.com/guilherme-0liveira-dev/Teste-Pratico-Artefact.git
+cd Teste-Pratico-Artefact
 
 # 2. Create and activate a virtual environment
 python -m venv .venv
@@ -560,7 +560,7 @@ cp .env.example .env
 | `LLM_PROVIDER` | `nvidia` | Active LLM backend (`nvidia`, `ollama`, or `mock`). |
 | `LLM_API_KEY` | `""` | API Key for NVIDIA NIM (from [build.nvidia.com](https://build.nvidia.com)). |
 | `LLM_BASE_URL` | `https://integrate.api.nvidia.com/v1` | OpenAI-compatible endpoint URL. |
-| `LLM_MODEL` | `meta/llama-3.3-70b-instruct` | Model identifier for cloud inference. |
+| `LLM_MODEL` | `nvidia/nemotron-3.5-bolt-e4b` | Official primary model identifier for cloud inference (with automatic fallback support). |
 | `OLLAMA_BASE_URL` | `http://127.0.0.1:11434/v1` | Local Ollama endpoint. |
 | `OLLAMA_MODEL` | `qwen2.5-coder:7b` | Model identifier for local inference. |
 | `DATABASE_URL` | `sqlite:///data/emporio.db` | SQLAlchemy database connection URI. |
